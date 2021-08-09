@@ -3,24 +3,35 @@ import {
   Avatar,
   IconButton,
   InputBase,
+  Menu,
+  Popover,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from "@material-ui/core";
-import { alpha, makeStyles } from "@material-ui/core/styles";
+import { alpha, makeStyles, useTheme } from "@material-ui/core/styles";
 import WbSunnySharpIcon from "@material-ui/icons/WbSunnySharp";
 import WbSunnyOutlinedIcon from "@material-ui/icons/WbSunnyOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import ListViewIcon from "@material-ui/icons/ViewAgendaOutlined";
 import GridViewIcon from "@material-ui/icons/ViewQuiltOutlined";
-import userContext from "../User/User";
 import { useContext, useState } from "react";
 import UserInfoMenu from "../Dashboard/UserInfoMenu";
 import logo from "../../logo.png";
+import MenuDrawer from "./MenuDrawer";
+import {
+  getStorage,
+  setStorage,
+} from "../../utils/Theme/utilities.js/storageUtil";
 const useStyles = makeStyles(theme => ({
   root: {
+    padding: 0,
+    margin: 0,
+  },
+  appBarCss: {
     // zIndex: theme.zIndex.drawer + 1,
-    border: `1px solid ${theme.palette.outline}`,
+    borderBottom: `1px solid ${theme.palette.outline}`,
     boxShadow: "none",
   },
   inputRoot: {
@@ -29,7 +40,6 @@ const useStyles = makeStyles(theme => ({
     padding: "5px",
     [theme.breakpoints.down("xs")]: {
       display: "none",
-      // color: "Red",
     },
   },
   inputInput: {
@@ -37,9 +47,6 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: `calc(1em + 18px)`,
     transition: theme.transitions.create("width"),
     width: "100%",
-    // [theme.breakpoints.up("md")]: {
-    //   width: "20ch",
-    // },
   },
   search: {
     position: "relative",
@@ -66,59 +73,72 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     color: theme.palette.secondary.dark,
   },
+  toggleViewCss: {
+    // display: "none",
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
+  viewIconCss: {
+    color: theme.palette.secondary.dark,
+  },
 }));
 export function Header() {
   const classes = useStyles();
-  const { user, setUser } = useContext(userContext);
   const [openProfile, setOpenProfile] = useState(false);
-
-  function handleThemeChange() {
-    setUser({
-      name: user.name,
-      theme: user.theme === "light" ? "dark" : "light",
-      view: user.view,
-    });
-  }
-
-  function handleViewChange() {
-    setUser({
-      name: user.name,
-      theme: user.theme,
-      view: user.view === "grid" ? "list" : "grid",
-    });
-  }
-
-  function handleProfileClick() {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openMenu, setOpenMenu] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const userChoice = getStorage("choice");
+  function handleUserChoice(key) {
+    let choice = {
+      theme: userChoice?.theme,
+      view: userChoice?.view,
+    };
     debugger;
-    setOpenProfile(!openProfile);
+    if (key === "theme") {
+      choice.theme = userChoice?.theme === "light" ? "dark" : "light";
+    }
+    if (key === "view") {
+      choice.view = userChoice?.view === "grid" ? "list" : "grid";
+    }
+    setStorage("choice", choice);
   }
-  // function toggleMenu() {
-  //   setUser({
-  //     name: user.name,
-  //     theme: user.theme,
-  //     openMenu: !user.openMenu,
-  //   });
-  // }
+
+  function toggleOpenProfile(e) {
+    setOpenProfile(!openProfile);
+    setAnchorEl(e.currentTarget);
+  }
+
+  function toggleMenu(e) {
+    setOpenMenu(!openMenu);
+    setMenuAnchorEl(e.currentTarget);
+  }
   return (
-    <div>
-      <AppBar position="static" className={classes.root}>
+    <div className={classes.root}>
+      <AppBar position="static" className={classes.appBarCss}>
         <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
           <span style={{ display: "inline-flex", alignItems: "center" }}>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="menu"
-              // onClick={toggleMenu}
+              onClick={toggleMenu}
             >
               <MenuIcon />
             </IconButton>
             <img src={logo} alt="app-logo" height="40px" width="40px" />
-            {/* <WbIncandescentIcon style={{ transform: "rotateX(180deg)" }} /> */}
             <Typography variant="h6" noWrap style={{ marginLeft: "8px" }}>
               Keep It
             </Typography>
           </span>
-          <span style={{ display: "inline-flex", alignItems: "center" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              marginRight: "4px",
+            }}
+          >
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -145,36 +165,40 @@ export function Header() {
               //   className={classes.menuButton}
               color="inherit"
               aria-label="menu"
-              onClick={handleThemeChange}
+              onClick={() => {
+                handleUserChoice("theme");
+              }}
               style={{ marginRight: "4px" }}
             >
-              {user.theme === "dark" ? (
-                <WbSunnySharpIcon style={{ color: "#ecd215" }} />
-              ) : (
+              {/* {user.theme === "dark" ? ( */}
+              <WbSunnySharpIcon style={{ color: "#ecd215" }} />
+              {/* ) : (
                 <WbSunnyOutlinedIcon style={{ color: "#424040" }} />
-              )}
+              )} */}
             </IconButton>
 
             <IconButton
               edge="start"
-              //   className={classes.menuButton}
-              color="inherit"
               aria-label="menu"
-              onClick={handleViewChange}
+              onClick={() => {
+                handleUserChoice("view");
+              }}
               style={{ marginRight: "4px" }}
+              className={classes.toggleViewCss}
             >
-              {user.view === "grid" ? (
-                <ListViewIcon fontSize="30" />
-              ) : (
-                <GridViewIcon fontSize="30" />
-              )}
+              {/* {user.view === "list" ? ( */}
+              <GridViewIcon fontSize="large" className={classes.viewIconCss} />
+              {/* ) : (
+                <ListViewIcon
+                  fontSize="medium"
+                  className={classes.viewIconCss}
+                />
+              )} */}
             </IconButton>
             <IconButton
               edge="end"
-              //   className={classes.menuButton}
-              color="inherit"
               aria-label="menu"
-              onClick={handleProfileClick}
+              onClick={toggleOpenProfile}
             >
               <Avatar alt="Profile Picture" src={null} />
             </IconButton>
@@ -182,7 +206,34 @@ export function Header() {
         </Toolbar>
       </AppBar>
 
-      <UserInfoMenu open={openProfile} />
+      <Popover
+        open={openProfile}
+        anchorEl={anchorEl}
+        onClose={toggleOpenProfile}
+        anchorOrigin={{
+          vertical: 70,
+          horizontal: 0,
+        }}
+      >
+        <UserInfoMenu />
+      </Popover>
+
+      <Popover
+        open={openMenu}
+        anchorEl={menuAnchorEl}
+        onClose={toggleMenu}
+        elevation={0}
+        PaperProps={{
+          style: {
+            left: "10px",
+            transform: "translateX(-14px) translateY(51px)",
+            border: "none",
+            height: "100%",
+          },
+        }}
+      >
+        <MenuDrawer />
+      </Popover>
     </div>
   );
 }

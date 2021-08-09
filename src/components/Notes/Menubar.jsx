@@ -21,9 +21,13 @@ const useStyles = makeStyles(theme => ({
     display: "inline-flex",
     margin: "1px 8px",
     width: "32px",
+    [theme.breakpoints.down("xs")]: {
+      margin: "1px 4px 1px 2px",
+    },
+    height: "20px",
   },
-  iconButtonCss: {
-    padding: "0px",
+  ".MuiIconButton-root": {
+    padding: "0px 12px",
   },
 }));
 
@@ -32,8 +36,8 @@ export default function Menubar(props) {
   const [showColorPallete, setShowColorPallete] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleItemHover = (e, itemId) => {
-    if (itemId === 2) {
+  const handleItemHover = (e, itemId, action) => {
+    if (itemId === 1) {
       setAnchorEl(e.currentTarget);
       setShowColorPallete(!showColorPallete);
     } else {
@@ -42,15 +46,18 @@ export default function Menubar(props) {
     }
   };
 
-  const handleItemMouseOut = (e, itemId) => {
-    if (itemId === 2) {
+  const handleItemMouseOut = (e, itemId, action) => {
+    if (itemId === 1) {
       setAnchorEl(!anchorEl);
       setShowColorPallete(!showColorPallete);
+    } else {
+      setAnchorEl(e.currentTarget);
+      setShowColorPallete(false);
     }
   };
 
-  const handleItemClick = (e, itemId) => {
-    if (itemId === 2) {
+  const handleItemClick = (e, itemId, action) => {
+    if (itemId === 1) {
     }
   };
   const handlePalleteClose = () => {
@@ -62,34 +69,47 @@ export default function Menubar(props) {
     props.handleNoteColorChange(color);
   };
   const list = [
-    { icon: <ReminderIcon />, label: "Remind me" },
-    { icon: <AddPersonIcon />, label: "Remind me" },
+    { icon: <ReminderIcon />, label: "Remind me", action: "REMIND" },
+    // { icon: <AddPersonIcon />, label: "Collaborator" },
     {
       icon: <PaletteIcon />,
       label: "Remind me",
+      action: "COLOR_CHANGE",
     },
-    { icon: <ImageIcon />, label: "Remind me" },
-    { icon: <ArchiveIcon />, label: "Remind me" },
-    { icon: <MoreIcon />, label: "Remind me" },
+    { icon: <ImageIcon />, label: "Add Image", action: "ADD_IMAGE" },
+    { icon: <ArchiveIcon />, label: "Archive", action: "ARCHIVE" },
+    { icon: <MoreIcon />, label: "More", action: "MORE" },
+    // {
+    //   icon: (
+    //     <IconButton disabled>
+    //       <UndoIcon />
+    //     </IconButton>
+    //   ),
+    //   label: "Undo",
+    // },
+    // {
+    //   icon: (
+    //     <IconButton disabled>
+    //       <RedoIcon />
+    //     </IconButton>
+    //   ),
+    //   label: "Redo",
+    // },
     {
       icon: (
-        <IconButton disabled className={classes.iconButtonCss}>
-          <UndoIcon />
-        </IconButton>
+        <span
+          style={{
+            fontSize: "14px",
+            textTransform: "capitalize",
+            position: "absolute",
+            right: "0px",
+          }}
+        >
+          close
+        </span>
       ),
-      label: "Remind me",
-    },
-    {
-      icon: (
-        <IconButton disabled className={classes.iconButtonCss}>
-          <RedoIcon />
-        </IconButton>
-      ),
-      label: "Remind me",
-    },
-    {
-      icon: <Button size="small">close</Button>,
-      label: "Remind me",
+      // label: "Remind me",
+      action: "CLOSE",
     },
   ];
 
@@ -97,29 +117,35 @@ export default function Menubar(props) {
     <div>
       <List>
         {list.map((item, index) => (
-          <ListItem key={index} className={classes.listItemCss}>
-            <IconButton
-              onMouseOver={e => {
-                handleItemHover(e, index);
-              }}
-              onClick={e => {
-                handleItemClick(e, index);
-              }}
-              // onMouseLeave={e => {
-              //   handleItemMouseOut(e, index);
-              // }}
-            >
-              <Tooltip
-                key={index}
-                title={item.label}
-                // style={{
-                //   position: "absolute",
-                // }}
-              >
-                {item.icon}
-              </Tooltip>
-            </IconButton>
-          </ListItem>
+          <div
+            key={index}
+            className={classes.listItemCss}
+            onMouseOver={e => {
+              handleItemHover(e, index, item.action);
+            }}
+            onClick={e => {
+              handleItemClick(e, index, item.action);
+            }}
+            // onMouseOut={e => {
+            //   handleItemMouseOut(e, index, item.action);
+            // }}
+          >
+            <span className={classes.iconCss}>
+              {item?.label ? (
+                <Tooltip
+                  key={index}
+                  title={item.label}
+                  // style={{
+                  //   position: "absolute",
+                  // }}
+                >
+                  {item.icon}
+                </Tooltip>
+              ) : (
+                <>{item.icon}</>
+              )}
+            </span>
+          </div>
         ))}
       </List>
       <ColorPallete

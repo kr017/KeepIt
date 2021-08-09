@@ -1,22 +1,3 @@
-//Pastel Candy theme
-/*
-import { createMuiTheme } from "@material-ui/core/styles";
-export const selectedTheme = createMuiTheme({
-  palette: {
-    type: theme ? "light" : "dark",
-    primary: {
-      main: theme ? "#fff" : "#202124", //lightBlue[500],
-    },
-    secondary: {
-      main: theme
-        ? "#202124" //deepOrange[900]
-        : "#fff", //deepPurple[500],
-    },
-  },
-});
-
-*/
-
 const light = {
   palette: {
     type: "light",
@@ -48,10 +29,27 @@ const light = {
     transparent: "#ece9e9",
 
     outline: "#e0e0e0",
+    border: "#e8eaed",
+
+    //Google border
+    primaryBorder: "#1A73E8",
+
     overrides: {
       MuiAppBar: {
         root: {
           // "box-shadow": "none",
+        },
+      },
+
+      MuiIconButton: {
+        root: {
+          padding: "0px 16px",
+        },
+      },
+      MuiButton: {
+        // -containedPrimary
+        root: {
+          backgroundColor: "#1a73e8",
         },
       },
     },
@@ -90,10 +88,20 @@ const dark = {
     hover: "#41331c",
     transparent: "#757575",
     outline: "#5f6368",
+    border: "#656169",
     overrides: {
-      MuiAppBar: {
-        root: {
-          // "box-shadow": "none",
+      MuiCssBaseline: {
+        MuiAppBar: {
+          root: {
+            // "box-shadow": "none",
+          },
+        },
+
+        MuiIconButton: {
+          root: {
+            padding: "0px 12px",
+            color: "green",
+          },
         },
       },
     },

@@ -8,7 +8,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Menubar from "./Menubar";
-import { useReducer } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import FavoriteOutlined from "@material-ui/icons/FavoriteOutlined";
 import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
@@ -17,7 +16,7 @@ import clsx from "clsx";
 import Masonry from "react-masonry-css";
 import { useState } from "react";
 import { useEffect } from "react";
-import userContext from "../User/User";
+import { getAllNotes, updateNote } from "../../apis/noteServices";
 
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
@@ -52,9 +51,7 @@ const useStyles = makeStyles(theme => ({
     margin: "16px auto",
     width: "70vw",
     padding: "5px 15px 0px 15px",
-    "&:hover + $pinIconCss": {
-      opacity: 1,
-    },
+
     // "&:hover": {
     //   "& > List > IconButton": {
     //     ":hover": {
@@ -77,73 +74,46 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: "2px",
     right: "0px",
-    opacity: 0,
-    "&:hover": {
-      opacity: 1,
-    },
-  },
-  pinIconCss_Hover: {
-    position: "absolute",
-    top: "2px",
-    right: "0px",
-    opacity: 1,
   },
 }));
+
 export default function NotesListView() {
   const classes = useStyles();
   const theme = useTheme();
-  const { user, setUser } = useContext(userContext);
-
+  const user = { theme: "light" };
   const [breakPoints, setBreakPoints] = useState(4);
-  function notesReducer(note, action) {
-    let newNote = [],
-      item = null,
-      update = [];
-    switch (action.type.type) {
-      case "COLOR_CHANGE":
-        newNote = note;
-        item = note.findIndex(i => i.id === action.note.id);
-        newNote[item].color = action.type.newColor;
-        update = [...newNote];
-        return update;
 
-      case "PIN_CHANGE":
-        newNote = note;
-        item = note.findIndex(i => i.id === action.note.id);
-        newNote[item].isPinned = !newNote[item].isPinned;
-        update = [...newNote];
-        return update;
-
-      default:
-        return;
-    }
+  function handleUpdateNote(note) {
+    updateNote(note)
+      .then(res => {
+        loadList();
+      })
+      .catch(err => {});
   }
-  const [notes, setNotes] = useReducer(notesReducer, [
-    {
-      id: 1,
-      title: "titleedmg",
-      description:
-        "xzzvzxvzxxzvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
-      isPinned: false,
-      color: "pink",
-      lastModified: new Date(),
-    },
-    {
-      id: 2,
-      title: "Title",
-      description: "dvdsf",
-      isPinned: false,
-      color: "blue",
-      lastModified: new Date(),
-    },
-  ]);
+
+  function handleShowMenu(note) {
+    let newNote = notes;
+    newNote.forEach(element => {
+      if (element._id === note._id) {
+        element.showMenu = true;
+      } else {
+        element.showMenu = false;
+      }
+    });
+
+    setNotes(newNote);
+  }
+
+  const [notes, setNotes] = useState([]);
+  /**
+   * to set breakpoints for grid view
+   */
   const xs = useMediaQuery(theme.breakpoints.up("xs")); //375 //1
   const sm = useMediaQuery(theme.breakpoints.up("sm")); //600 //2
   const md = useMediaQuery(theme.breakpoints.up("md")); //960 //3
   const lg = useMediaQuery(theme.breakpoints.up("lg")); //1280 //4
   const xl = useMediaQuery(theme.breakpoints.up("xl")); //1920 //5
-
-  useEffect(() => {
+  function setPageBreakPoints() {
     if (xl) {
       setBreakPoints(5);
     } else if (lg) {
@@ -155,70 +125,27 @@ export default function NotesListView() {
     } else if (xs) {
       setBreakPoints(1);
     }
-  });
+  }
+
+  /**
+   * loading all notes of logged in user
+   */
+  function loadList() {
+    getAllNotes()
+      .then(function (res) {
+        setNotes(res.data);
+      })
+      .catch(err => {});
+  }
+
+  useEffect(() => {
+    setPageBreakPoints();
+    loadList();
+  }, []);
+
   return (
     <div>
-      {user.view === "grid" ? (
-        <Grid>
-          <Masonry
-            breakpointCols={breakPoints}
-            className={classes.myMasonryGrid}
-            columnClassName={classes.myMasonryGridColumn}
-          >
-            {notes &&
-              notes.map((note, index) => (
-                <Paper
-                  key={index}
-                  elevation={4}
-                  className={classes.gridNoteCss}
-                  style={{
-                    margin: "8px",
-                    borderColor:
-                      theme.palette[note.color] === theme.palette.default
-                        ? theme.palette.outline
-                        : theme.palette[note.color],
-                    backgroundColor: theme.palette[note.color],
-                  }}
-                >
-                  <TextareaAutosize
-                    className={classes.textareaInput}
-                    style={{ fontSize: "18px", fontWeight: "bold" }}
-                    type="text"
-                    placeholder="Title"
-                    value={note.title}
-                    disabled={true}
-                  />
-
-                  <IconButton
-                    // className={clsx(classes.root, {
-                    //   [classes.hover]: classes.pinIconCss_Hover,
-                    // })}
-                    className={classes.pinIconCss}
-                    onClick={() => {
-                      setNotes({
-                        note,
-                        type: {
-                          type: "PIN_CHANGE",
-                        },
-                      });
-                    }}
-                  >
-                    {note?.isPinned ? <FavoriteOutlined /> : <FavoriteIcon />}
-                  </IconButton>
-
-                  <TextareaAutosize
-                    className={classes.textareaInput}
-                    style={{ fontSize: "16px" }}
-                    type="text"
-                    placeholder="Description"
-                    disabled={true}
-                    value={note.description}
-                  />
-                </Paper>
-              ))}
-          </Masonry>
-        </Grid>
-      ) : (
+      {!sm || user.view === "list" ? (
         <Grid>
           {notes &&
             notes.map((note, index) => (
@@ -233,6 +160,12 @@ export default function NotesListView() {
                       : theme.palette[note.color],
                   backgroundColor: theme.palette[note.color],
                 }}
+                onMouseEnter={() => {
+                  handleShowMenu(note);
+                }}
+                onMouseLeave={() => {
+                  handleShowMenu(note);
+                }}
               >
                 <List>
                   <TextareaAutosize
@@ -244,22 +177,19 @@ export default function NotesListView() {
                     disabled={true}
                   />
 
-                  <IconButton
-                    // className={clsx(classes.root, {
-                    //   [classes.hover]: classes.pinIconCss_Hover,
-                    // })}
-                    className={classes.pinIconCss}
-                    onClick={() => {
-                      setNotes({
-                        note,
-                        type: {
-                          type: "PIN_CHANGE",
-                        },
-                      });
-                    }}
-                  >
-                    {note?.isPinned ? <FavoriteOutlined /> : <FavoriteIcon />}
-                  </IconButton>
+                  {note.showMenu && (
+                    <IconButton
+                      className={classes.pinIconCss}
+                      onClick={() => {
+                        handleUpdateNote({
+                          _id: note._id,
+                          isPinned: !note.isPinned,
+                        });
+                      }}
+                    >
+                      {note?.isPinned ? <FavoriteOutlined /> : <FavoriteIcon />}
+                    </IconButton>
+                  )}
 
                   <TextareaAutosize
                     className={classes.textareaInput}
@@ -269,20 +199,111 @@ export default function NotesListView() {
                     disabled={true}
                     value={note.description}
                   />
-                  <Menubar
-                    handleNoteColorChange={color => {
-                      setNotes({
-                        note,
-                        type: { type: "COLOR_CHANGE", newColor: color },
-                      });
-                      console.log();
-                    }}
-                  />
+                  {note.showMenu ? (
+                    <Menubar
+                      handleNoteColorChange={color => {
+                        handleUpdateNote({ _id: note._id, color: color });
+                      }}
+                    />
+                  ) : (
+                    <div style={{ height: "30px" }}></div>
+                  )}
                 </List>
               </Paper>
             ))}
         </Grid>
-      )}{" "}
+      ) : (
+        <Grid>
+          <Masonry
+            breakpointCols={breakPoints}
+            className={classes.myMasonryGrid}
+            columnClassName={classes.myMasonryGridColumn}
+          >
+            {notes &&
+              notes.length > 0 &&
+              notes.map((note, index) => (
+                <Paper
+                  key={index}
+                  elevation={4}
+                  className={classes.gridNoteCss}
+                  style={{
+                    margin: "8px",
+                    borderColor:
+                      theme.palette[note.color] === theme.palette.default
+                        ? theme.palette.outline
+                        : theme.palette[note.color],
+                    backgroundColor: theme.palette[note.color],
+                  }}
+                  // onMouseEnter={() => {
+                  //   setNotes({
+                  //     note,
+                  //     type: {
+                  //       type: "SHOW_MENU",
+                  //     },
+                  //   });
+                  // }}
+                  // onMouseLeave={() => {
+                  //   setNotes({
+                  //     note,
+                  //     type: {
+                  //       type: "SHOW_MENU",
+                  //     },
+                  //   });
+                  // }}
+                >
+                  <TextareaAutosize
+                    className={classes.textareaInput}
+                    style={{ fontSize: "18px", fontWeight: "bold" }}
+                    type="text"
+                    placeholder="Title"
+                    value={note.title}
+                    disabled={true}
+                  />
+
+                  {note.showMenu && (
+                    <IconButton
+                      className={classes.pinIconCss}
+                      onClick={() => {
+                        setNotes({
+                          note,
+                          type: {
+                            type: "PIN_CHANGE",
+                          },
+                        });
+                      }}
+                    >
+                      {note?.isPinned ? <FavoriteOutlined /> : <FavoriteIcon />}
+                    </IconButton>
+                  )}
+                  <TextareaAutosize
+                    className={classes.textareaInput}
+                    style={{ fontSize: "16px" }}
+                    type="text"
+                    placeholder="Description"
+                    disabled={true}
+                    value={note.description}
+                  />
+
+                  {note.showMenu ? (
+                    <Menubar
+                      handleNoteColorChange={color => {
+                        setNotes({
+                          note,
+                          type: {
+                            type: "COLOR_CHANGE",
+                            newColor: color,
+                          },
+                        });
+                      }}
+                    />
+                  ) : (
+                    <div style={{ height: "30px" }}></div>
+                  )}
+                </Paper>
+              ))}
+          </Masonry>
+        </Grid>
+      )}
     </div>
   );
 }

@@ -1,42 +1,35 @@
-import { CssBaseline, Grid } from "@material-ui/core";
+import { Button, CssBaseline, Grid } from "@material-ui/core";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { useReducer } from "react";
 import { themes } from "../../utils/Theme/Theme";
 import { Header } from "../Common/Header";
 import Sidebar from "../Common/Sidebar";
 import NotesSection from "../Notes/NotesSection";
-import userContext from "../User/User";
+import { useLogin } from "../../context";
+import { getStorage } from "../../utils/Theme/utilities.js/storageUtil";
 
-const userDetails = {
-  name: "Kiran",
-  theme: "light",
-  view: "grid",
-};
-function userReducer(state, item) {
-  return item;
-}
 export function Dashboard() {
-  const [user, setUser] = useReducer(userReducer, userDetails);
+  const { userState } = useLogin();
+  const userChoice = getStorage("choice");
 
-  const preferredTheme = user.theme;
+  const preferredTheme = userChoice?.theme ? userChoice?.theme : "light"; //"light"; //user.theme;
   const theme = createTheme(themes[preferredTheme]);
-
+  // console.log(userChoice?.theme);
   return (
     <div>
-      <userContext.Provider value={{ user, setUser }}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Header />
-          <Grid container>
-            <Grid item xs={2}>
-              <Sidebar />
-            </Grid>
-            <Grid item xs={10} style={{ margin: "0 auto" }}>
-              <NotesSection />
-            </Grid>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Header />
+
+        <Grid container>
+          <Grid item xs={2}>
+            <Sidebar />
           </Grid>
-        </ThemeProvider>
-      </userContext.Provider>
+          <Grid item xs={10} style={{ margin: "0 auto" }}>
+            <NotesSection />
+          </Grid>
+        </Grid>
+      </ThemeProvider>
     </div>
   );
 }

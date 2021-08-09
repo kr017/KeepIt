@@ -1,51 +1,82 @@
 import React, { useState } from "react";
-import { Menu, MenuItem, Tooltip } from "@material-ui/core";
+import { Avatar, Menu, MenuItem, Tooltip } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import { useLogin } from "../../context";
 
 const useStyles = makeStyles(theme => ({
-  listItemCss: {
-    display: "inline-flex",
-    margin: "1px 8px",
-    width: "32px",
+  root: {
+    width: "354px",
+    margin: "0 auto",
+    [theme.breakpoints.down("xs")]: {
+      width: "280px",
+    },
+  },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+    margin: "0 auto",
+  },
+  AvtarContainerCss: {
+    // display: "flex",
+    textAlign: "center",
+    borderBottom: `1px solid ${theme.palette.border}`,
+    padding: "16px 0px",
+  },
+  nameCss: {
+    color: theme.palette.primary.dark,
+    fontSize: "16px",
+  },
+  emailCss: {
+    fontSize: "14px",
+  },
+  contentCss: {
+    display: "flex",
+    justifyContent: "center",
+    borderBottom: `1px solid ${theme.palette.border}`,
+    padding: "16px 0px",
+  },
+  privacyDiv: {
+    textAlign: "center",
+    margin: "14px 30px",
+  },
+  spanCss: {
+    padding: "4px",
   },
 }));
 
-export default function UserInfoMenu({ open }) {
+export default function UserInfoMenu({ open, handleClose }) {
   const classes = useStyles();
+  const theme = useTheme();
 
-  const [openDialog, setOpenDialog] = useState(open);
-  function handleDialogClose() {
-    setOpenDialog(!openDialog);
-  }
+  const { userState } = useLogin();
   return (
-    <div>
-      <Dialog
-        open={openDialog}
-        onClose={handleDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Sign Out
-          </Button>
-        </DialogActions>
-      </Dialog>
+    <div className={classes.root}>
+      <div className={classes.AvtarContainerCss}>
+        <div>
+          <Avatar
+            alt={userState.name}
+            src="/static/images/avatar/1.jpg"
+            className={classes.large}
+          />
+        </div>
+        <div className={classes.nameCss}>{userState.name}</div>
+        <div className={classes.emailCss}>{userState.email}</div>
+      </div>
+      <div className={classes.contentCss}>
+        <Button
+          style={{
+            textTransform: "capitalize",
+            border: `1px solid ${theme.palette.border}`,
+          }}
+        >
+          Sign Out
+        </Button>
+      </div>
+      <div className={classes.privacyDiv}>
+        <span className={classes.spanCss}>Privacy Policy</span>
+        <span className={classes.spanCss}>Terms of Service</span>
+      </div>
     </div>
   );
 }

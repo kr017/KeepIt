@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { Paper } from "@material-ui/core";
+import { ClickAwayListener, Paper } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 // import { PinIcon } from "../Common/Icons";
 import TextareaAutosize from "react-textarea-autosize";
 import Menubar from "./Menubar";
+import { addNote } from "../../apis/noteServices";
 const useStyles = makeStyles(theme => ({
   root: {
-    //color: theme.primary,
-    //backgroundColor: theme.secondary,
     margin: "32px auto 16px auto",
     width: "70vw",
     [theme.breakpoints.down("xs")]: {
@@ -59,6 +58,17 @@ export default function CreateNote() {
     setNoteColor(color);
   };
 
+  function handleAddNote() {
+    let requestParams = {
+      title: title,
+      description: description,
+      color: noteColor,
+    };
+
+    addNote(requestParams)
+      .then(function (res) {})
+      .catch(err => {});
+  }
   return (
     <div className={classes.root}>
       {showShort ? (
@@ -83,59 +93,70 @@ export default function CreateNote() {
           </Paper>
         </div>
       ) : (
-        <Paper
-          elevation={4}
-          style={{
-            borderColor:
-              theme.palette[noteColor] === theme.palette.default
-                ? theme.palette.outline
-                : theme.palette[noteColor],
-            backgroundColor: theme.palette[noteColor],
+        <ClickAwayListener
+          onClickAway={e => {
+            setShowShort(true);
+
+            //save note if having desc
+            if (description && description.length > 0) {
+              handleAddNote();
+            }
           }}
-          className={classes.noteCss}
         >
-          <div
-          // className={classes.containerCss}
+          <Paper
+            elevation={4}
+            style={{
+              borderColor:
+                theme.palette[noteColor] === theme.palette.default
+                  ? theme.palette.outline
+                  : theme.palette[noteColor],
+              backgroundColor: theme.palette[noteColor],
+            }}
+            className={classes.noteCss}
           >
-            <div className={classes.contentCss}>
-              <TextareaAutosize
-                // rows="1"
-                className={classes.textareaInput}
-                onChange={e => {
-                  setTitle(e.target.value);
-                }}
-                style={{ fontSize: "20px" }}
-                type="text"
-                placeholder="Title"
-                value={title}
-              />
+            <div
+            // className={classes.containerCss}
+            >
+              <div className={classes.contentCss}>
+                <TextareaAutosize
+                  // rows="1"
+                  className={classes.textareaInput}
+                  onChange={e => {
+                    setTitle(e.target.value);
+                  }}
+                  style={{ fontSize: "20px" }}
+                  type="text"
+                  placeholder="Title"
+                  value={title}
+                />
 
-              <TextareaAutosize
-                className={classes.textareaInput}
-                onChange={e => {
-                  setDescription(e.target.value);
-                }}
-                type="text"
-                style={{ fontSize: "16px" }}
-                placeholder="Take a note..."
-                value={description}
-                autoFocus
-              />
-            </div>
+                <TextareaAutosize
+                  className={classes.textareaInput}
+                  onChange={e => {
+                    setDescription(e.target.value);
+                  }}
+                  type="text"
+                  style={{ fontSize: "16px" }}
+                  placeholder="Take a note..."
+                  value={description}
+                  autoFocus
+                />
+              </div>
 
-            <div>
-              {/* <PinIcon
+              <div>
+                {/* <PinIcon
             style={{ color: "red" }}
             isPinned={true} //{isPinned}
             // setPinned={setPinned}
             handlePinClick={null} //{pinClickHandler}
           /> */}
+              </div>
             </div>
-          </div>
-          <div>
-            <Menubar handleNoteColorChange={handleNoteColorChange} />
-          </div>
-        </Paper>
+            <div>
+              <Menubar handleNoteColorChange={handleNoteColorChange} />
+            </div>
+          </Paper>
+        </ClickAwayListener>
       )}
     </div>
   );

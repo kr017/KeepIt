@@ -19,7 +19,6 @@ const useStyles = makeStyles(theme => ({
   },
   drawer: {
     zIndex: 0,
-    width: "25%",
   },
   drawerPaper: {
     marginTop: "70px", // equal to AppBar height
@@ -36,7 +35,11 @@ const useStyles = makeStyles(theme => ({
     display: "inline-flex",
     alignItems: "center",
     paddingLeft: "12px",
-    paddingRight: "24px",
+    // paddingRight: "24px",
+    width: "280px",
+    [theme.breakpoints.down("xs")]: {
+      width: "180px",
+    },
     borderRadius: "0px 25px 25px 0px",
     "&:hover": {
       backgroundColor: theme.palette.transparent, //transparent,
@@ -48,6 +51,10 @@ const useStyles = makeStyles(theme => ({
     display: "inline-flex",
     alignItems: "center",
     paddingLeft: "12px",
+    width: "280px",
+    [theme.breakpoints.down("xs")]: {
+      width: "180px",
+    },
     borderRadius: "0px 25px 25px 0px",
     backgroundColor: theme.palette.hover,
     color: theme.palette.primary.dark,
@@ -152,7 +159,7 @@ export default function Sidebar() {
         <div style={{ paddingTop: "8px" }}>
           {options?.length > 0 &&
             options.map((anchor, index) => (
-              <List disablePadding>
+              <List disablePadding key={index}>
                 <span
                   onMouseOver={e => {
                     toggleDrawer();
