@@ -37,7 +37,7 @@ export default function Menubar(props) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleItemHover = (e, itemId, action) => {
-    if (itemId === 1) {
+    if (itemId === 0) {
       setAnchorEl(e.currentTarget);
       setShowColorPallete(!showColorPallete);
     } else {
@@ -47,7 +47,7 @@ export default function Menubar(props) {
   };
 
   const handleItemMouseOut = (e, itemId, action) => {
-    if (itemId === 1) {
+    if (itemId === 0) {
       setAnchorEl(!anchorEl);
       setShowColorPallete(!showColorPallete);
     } else {
@@ -57,7 +57,7 @@ export default function Menubar(props) {
   };
 
   const handleItemClick = (e, itemId, action) => {
-    if (itemId === 1) {
+    if (itemId === 0) {
     }
   };
   const handlePalleteClose = () => {
@@ -69,7 +69,7 @@ export default function Menubar(props) {
     props.handleNoteColorChange(color);
   };
   const list = [
-    { icon: <ReminderIcon />, label: "Remind me", action: "REMIND" },
+    // { icon: <ReminderIcon />, label: "Remind me", action: "REMIND" },
     // { icon: <AddPersonIcon />, label: "Collaborator" },
     {
       icon: <PaletteIcon />,

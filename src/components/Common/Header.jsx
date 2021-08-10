@@ -24,6 +24,7 @@ import {
   getStorage,
   setStorage,
 } from "../../utils/Theme/utilities.js/storageUtil";
+import { useLogin } from "../../context";
 const useStyles = makeStyles(theme => ({
   root: {
     padding: 0,
@@ -89,20 +90,29 @@ export function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const userChoice = getStorage("choice");
+
+  const { userState, userDispatch } = useLogin();
+
   function handleUserChoice(key) {
     let choice = {
-      theme: userChoice?.theme,
-      view: userChoice?.view,
+      theme: userState?.theme,
+      view: userState?.view,
     };
-    debugger;
+
     if (key === "theme") {
-      choice.theme = userChoice?.theme === "light" ? "dark" : "light";
+      choice = {
+        view: userState?.view,
+        theme: userState?.theme === "light" ? "dark" : "light",
+      };
     }
     if (key === "view") {
-      choice.view = userChoice?.view === "grid" ? "list" : "grid";
+      choice = {
+        view: userState?.view === "grid" ? "list" : "grid",
+        theme: userState?.theme,
+      };
     }
     setStorage("choice", choice);
+    userDispatch({ type: "SETCHOICE", payload: choice });
   }
 
   function toggleOpenProfile(e) {
@@ -170,11 +180,11 @@ export function Header() {
               }}
               style={{ marginRight: "4px" }}
             >
-              {/* {user.theme === "dark" ? ( */}
-              <WbSunnySharpIcon style={{ color: "#ecd215" }} />
-              {/* ) : (
+              {userState.theme === "dark" ? (
+                <WbSunnySharpIcon style={{ color: "#ecd215" }} />
+              ) : (
                 <WbSunnyOutlinedIcon style={{ color: "#424040" }} />
-              )} */}
+              )}
             </IconButton>
 
             <IconButton
@@ -186,14 +196,17 @@ export function Header() {
               style={{ marginRight: "4px" }}
               className={classes.toggleViewCss}
             >
-              {/* {user.view === "list" ? ( */}
-              <GridViewIcon fontSize="large" className={classes.viewIconCss} />
-              {/* ) : (
+              {userState.view === "list" ? (
+                <GridViewIcon
+                  fontSize="large"
+                  className={classes.viewIconCss}
+                />
+              ) : (
                 <ListViewIcon
                   fontSize="medium"
                   className={classes.viewIconCss}
                 />
-              )} */}
+              )}
             </IconButton>
             <IconButton
               edge="end"

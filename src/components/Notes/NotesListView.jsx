@@ -17,6 +17,7 @@ import Masonry from "react-masonry-css";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getAllNotes, updateNote } from "../../apis/noteServices";
+import { useLogin } from "../../context";
 
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
@@ -54,9 +55,7 @@ const useStyles = makeStyles(theme => ({
 
     // "&:hover": {
     //   "& > List > IconButton": {
-    //     ":hover": {
-    //       opacity: 1,
-    //     },
+    //     opacity: 1,
     //   },
     // },
   },
@@ -74,13 +73,14 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: "2px",
     right: "0px",
+    // opacity: 1,
   },
 }));
 
 export default function NotesListView() {
   const classes = useStyles();
   const theme = useTheme();
-  const user = { theme: "light" };
+  const { userState } = useLogin();
   const [breakPoints, setBreakPoints] = useState(4);
 
   function handleUpdateNote(note) {
@@ -89,19 +89,6 @@ export default function NotesListView() {
         loadList();
       })
       .catch(err => {});
-  }
-
-  function handleShowMenu(note) {
-    let newNote = notes;
-    newNote.forEach(element => {
-      if (element._id === note._id) {
-        element.showMenu = true;
-      } else {
-        element.showMenu = false;
-      }
-    });
-
-    setNotes(newNote);
   }
 
   const [notes, setNotes] = useState([]);
@@ -143,9 +130,13 @@ export default function NotesListView() {
     loadList();
   }, []);
 
+  const [selectedNote, setSelectedNote] = useState(null);
+  function handleShowMenu(note) {
+    setSelectedNote(note._id);
+  }
   return (
     <div>
-      {!sm || user.view === "list" ? (
+      {!sm || userState.view === "list" ? (
         <Grid>
           {notes &&
             notes.map((note, index) => (
@@ -168,29 +159,34 @@ export default function NotesListView() {
                 }}
               >
                 <List>
-                  <TextareaAutosize
-                    className={classes.textareaInput}
-                    style={{ fontSize: "18px", fontWeight: "bold" }}
-                    type="text"
-                    placeholder="Title"
-                    value={note.title}
-                    disabled={true}
-                  />
+                  <div style={{ display: "flex" }}>
+                    <TextareaAutosize
+                      className={classes.textareaInput}
+                      style={{ fontSize: "18px", fontWeight: "bold" }}
+                      type="text"
+                      placeholder="Title"
+                      value={note.title}
+                      disabled={true}
+                    />
 
-                  {note.showMenu && (
-                    <IconButton
-                      className={classes.pinIconCss}
-                      onClick={() => {
-                        handleUpdateNote({
-                          _id: note._id,
-                          isPinned: !note.isPinned,
-                        });
-                      }}
-                    >
-                      {note?.isPinned ? <FavoriteOutlined /> : <FavoriteIcon />}
-                    </IconButton>
-                  )}
-
+                    {note._id == selectedNote && (
+                      <IconButton
+                        style={{ position: "relative" }}
+                        onClick={() => {
+                          handleUpdateNote({
+                            _id: note._id,
+                            isPinned: !note.isPinned,
+                          });
+                        }}
+                      >
+                        {note?.isPinned ? (
+                          <FavoriteOutlined className={classes.pinIconCss} />
+                        ) : (
+                          <FavoriteIcon className={classes.pinIconCss} />
+                        )}
+                      </IconButton>
+                    )}
+                  </div>
                   <TextareaAutosize
                     className={classes.textareaInput}
                     style={{ fontSize: "16px" }}
@@ -199,7 +195,7 @@ export default function NotesListView() {
                     disabled={true}
                     value={note.description}
                   />
-                  {note.showMenu ? (
+                  {note._id == selectedNote ? (
                     <Menubar
                       handleNoteColorChange={color => {
                         handleUpdateNote({ _id: note._id, color: color });
@@ -234,47 +230,41 @@ export default function NotesListView() {
                         : theme.palette[note.color],
                     backgroundColor: theme.palette[note.color],
                   }}
-                  // onMouseEnter={() => {
-                  //   setNotes({
-                  //     note,
-                  //     type: {
-                  //       type: "SHOW_MENU",
-                  //     },
-                  //   });
-                  // }}
-                  // onMouseLeave={() => {
-                  //   setNotes({
-                  //     note,
-                  //     type: {
-                  //       type: "SHOW_MENU",
-                  //     },
-                  //   });
-                  // }}
+                  onMouseEnter={() => {
+                    handleShowMenu(note);
+                  }}
+                  onMouseLeave={() => {
+                    handleShowMenu(note);
+                  }}
                 >
-                  <TextareaAutosize
-                    className={classes.textareaInput}
-                    style={{ fontSize: "18px", fontWeight: "bold" }}
-                    type="text"
-                    placeholder="Title"
-                    value={note.title}
-                    disabled={true}
-                  />
+                  <div style={{ display: "inline-flex" }}>
+                    <TextareaAutosize
+                      className={classes.textareaInput}
+                      style={{ fontSize: "18px", fontWeight: "bold" }}
+                      type="text"
+                      placeholder="Title"
+                      value={note.title}
+                      disabled={true}
+                    />
 
-                  {note.showMenu && (
-                    <IconButton
-                      className={classes.pinIconCss}
-                      onClick={() => {
-                        setNotes({
-                          note,
-                          type: {
-                            type: "PIN_CHANGE",
-                          },
-                        });
-                      }}
-                    >
-                      {note?.isPinned ? <FavoriteOutlined /> : <FavoriteIcon />}
-                    </IconButton>
-                  )}
+                    {note._id == selectedNote && (
+                      <IconButton
+                        style={{ position: "relative" }}
+                        onClick={() => {
+                          handleUpdateNote({
+                            _id: note._id,
+                            isPinned: !note.isPinned,
+                          });
+                        }}
+                      >
+                        {note?.isPinned ? (
+                          <FavoriteOutlined className={classes.pinIconCss} />
+                        ) : (
+                          <FavoriteIcon className={classes.pinIconCss} />
+                        )}
+                      </IconButton>
+                    )}
+                  </div>
                   <TextareaAutosize
                     className={classes.textareaInput}
                     style={{ fontSize: "16px" }}
@@ -284,7 +274,7 @@ export default function NotesListView() {
                     value={note.description}
                   />
 
-                  {note.showMenu ? (
+                  {note._id == selectedNote ? (
                     <Menubar
                       handleNoteColorChange={color => {
                         setNotes({

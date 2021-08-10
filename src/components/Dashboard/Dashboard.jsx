@@ -1,6 +1,5 @@
-import { Button, CssBaseline, Grid } from "@material-ui/core";
+import { CssBaseline, Grid } from "@material-ui/core";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import { useReducer } from "react";
 import { themes } from "../../utils/Theme/Theme";
 import { Header } from "../Common/Header";
 import Sidebar from "../Common/Sidebar";
@@ -14,7 +13,6 @@ export function Dashboard() {
 
   const preferredTheme = userChoice?.theme ? userChoice?.theme : "light"; //"light"; //user.theme;
   const theme = createTheme(themes[preferredTheme]);
-  // console.log(userChoice?.theme);
   return (
     <div>
       <ThemeProvider theme={theme}>

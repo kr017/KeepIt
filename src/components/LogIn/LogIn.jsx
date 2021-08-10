@@ -111,6 +111,7 @@ export function LogIn(props) {
         setLoading(false);
 
         userDispatch({ type: "LOGIN", payload: res.data.data });
+
         props.history.push("/");
         if (res?.data?.data?.token) {
           localStorage.setItem("hint", JSON.stringify(res.data.data));
