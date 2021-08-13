@@ -11,8 +11,8 @@ const userReducer = (state, action) => {
         name: action.payload.name,
         email: action.payload.email,
         token: action.payload.token,
-        theme: userChoice?.theme ? userChoice?.theme : "light",
-        view: userChoice?.view ? userChoice?.view : "grid",
+        theme: userChoice?.theme ? userChoice.theme : "light",
+        view: userChoice?.view ? userChoice.view : "grid",
       };
 
     case "LOGOUT":

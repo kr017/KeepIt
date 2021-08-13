@@ -24,7 +24,8 @@ import {
   getStorage,
   setStorage,
 } from "../../utils/Theme/utilities.js/storageUtil";
-import { useLogin } from "../../context";
+import { useLogin, useNote } from "../../context";
+import { getAllNotes } from "../../apis/noteServices";
 const useStyles = makeStyles(theme => ({
   root: {
     padding: 0,
@@ -92,6 +93,7 @@ export function Header() {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
   const { userState, userDispatch } = useLogin();
+  const { notesDispatch } = useNote();
 
   function handleUserChoice(key) {
     let choice = {
@@ -124,6 +126,16 @@ export function Header() {
     setOpenMenu(!openMenu);
     setMenuAnchorEl(e.currentTarget);
   }
+
+  const handleSearch = e => {
+    let search = e.target.value;
+
+    getAllNotes({ search: search })
+      .then(function (res) {
+        notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+      })
+      .catch(err => {});
+  };
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBarCss}>
@@ -160,6 +172,12 @@ export function Header() {
                   input: classes.inputInput,
                 }}
                 inputProps={{ "aria-label": "search" }}
+                onKeyPress={e => {
+                  handleSearch(e);
+                }}
+                onChange={e => {
+                  handleSearch(e);
+                }}
               />
             </div>
           </span>

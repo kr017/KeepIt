@@ -34,6 +34,7 @@ const light = {
     //Google border
     primaryBorder: "#1A73E8",
 
+    backCover: "#5f636829",
     overrides: {
       MuiAppBar: {
         root: {
@@ -89,6 +90,8 @@ const dark = {
     transparent: "#757575",
     outline: "#5f6368",
     border: "#656169",
+
+    backCover: "#9aa0a60a",
     overrides: {
       MuiCssBaseline: {
         MuiAppBar: {

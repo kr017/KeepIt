@@ -1,3 +1,3 @@
 import { useLogin, UserProvider } from "./userContext";
-
-export { useLogin, UserProvider };
+import { useNote, NotesProvider } from "./notesContext";
+export { useLogin, UserProvider, useNote, NotesProvider };

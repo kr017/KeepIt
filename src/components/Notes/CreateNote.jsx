@@ -5,6 +5,8 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import TextareaAutosize from "react-textarea-autosize";
 import Menubar from "./Menubar";
 import { addNote } from "../../apis/noteServices";
+import { useNote } from "../../context";
+
 const useStyles = makeStyles(theme => ({
   root: {
     margin: "32px auto 16px auto",
@@ -47,13 +49,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function CreateNote() {
+export default function CreateNote(props) {
   const classes = useStyles();
   const [title, setTitle] = useState(null);
   const [description, setDescription] = useState(null);
   const [noteColor, setNoteColor] = useState(null);
   const [showShort, setShowShort] = useState(true);
   const theme = useTheme();
+
+  const { notesDispatch } = useNote();
   const handleNoteColorChange = color => {
     setNoteColor(color);
   };
@@ -66,7 +70,9 @@ export default function CreateNote() {
     };
 
     addNote(requestParams)
-      .then(function (res) {})
+      .then(function (res) {
+        notesDispatch({ type: "ADD_NOTE", payload: res.data.data });
+      })
       .catch(err => {});
   }
   return (
@@ -87,7 +93,7 @@ export default function CreateNote() {
               style={{ fontSize: "16px" }}
               type="text"
               placeholder="Take a note..."
-              value={description}
+              value={description ? description : ""}
               autoFocus
             />
           </Paper>
@@ -138,7 +144,7 @@ export default function CreateNote() {
                   type="text"
                   style={{ fontSize: "16px" }}
                   placeholder="Take a note..."
-                  value={description}
+                  value={description ? description : ""}
                   autoFocus
                 />
               </div>
@@ -152,8 +158,11 @@ export default function CreateNote() {
           /> */}
               </div>
             </div>
-            <div>
-              <Menubar handleNoteColorChange={handleNoteColorChange} />
+            <div style={{ padding: "0px 15px" }}>
+              <Menubar
+                isCreateOrUpdate={true}
+                handleNoteColorChange={handleNoteColorChange}
+              />
             </div>
           </Paper>
         </ClickAwayListener>
