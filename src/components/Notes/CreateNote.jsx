@@ -160,7 +160,10 @@ export default function CreateNote(props) {
             </div>
             <div style={{ padding: "0px 15px" }}>
               <Menubar
-                isCreateOrUpdate={true}
+                colorPallete
+                addImage
+                archiveNote
+                closeNote
                 handleNoteColorChange={handleNoteColorChange}
               />
             </div>

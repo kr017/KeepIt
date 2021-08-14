@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router";
 import { Avatar, Menu, MenuItem, Tooltip } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -45,11 +46,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function UserInfoMenu({ open, handleClose }) {
+export default function UserInfoMenu(props) {
   const classes = useStyles();
+  const history = useHistory();
   const theme = useTheme();
 
-  const { userState } = useLogin();
+  const { userState, userDispatch } = useLogin();
+
+  const handleLogOut = () => {
+    userDispatch({ type: "LOGOUT" });
+    history.push("/login");
+  };
   return (
     <div className={classes.root}>
       <div className={classes.AvtarContainerCss}>
@@ -69,6 +76,7 @@ export default function UserInfoMenu({ open, handleClose }) {
             textTransform: "capitalize",
             border: `1px solid ${theme.palette.border}`,
           }}
+          onClick={() => handleLogOut()}
         >
           Sign Out
         </Button>

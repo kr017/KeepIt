@@ -6,6 +6,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import FavoriteOutlined from "@material-ui/icons/FavoriteOutlined";
 import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
 import Masonry from "react-masonry-css";
+import { EmptyNotes } from "./EmptyNotes";
 
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
@@ -82,85 +83,98 @@ export default function NotesGridView(props) {
 
   return (
     <Grid>
-      <Masonry
-        breakpointCols={breakPoints}
-        className={classes.myMasonryGrid}
-        columnClassName={classes.myMasonryGridColumn}
-      >
-        {props.list &&
-          props.list.length > 0 &&
-          props.list.map((note, index) => (
-            <Paper
-              key={index}
-              elevation={4}
-              className={classes.gridNoteCss}
-              style={{
-                margin: "8px",
-                borderColor:
-                  theme.palette[note.color] === theme.palette.default
-                    ? theme.palette.outline
-                    : theme.palette[note.color],
-                backgroundColor: theme.palette[note.color],
-              }}
-              onMouseEnter={() => {
-                handleShowMenu(note);
-              }}
-              onMouseLeave={() => {
-                handleShowMenu(note);
-              }}
-            >
-              <div style={{ display: "flex" }}>
-                <TextareaAutosize
-                  className={classes.textareaInput}
-                  style={{ fontSize: "18px", fontWeight: "bold" }}
-                  type="text"
-                  placeholder="Title"
-                  value={note.title}
-                  disabled={true}
-                />
+      {props.list && props.list.length > 0 ? (
+        <Grid>
+          <Masonry
+            breakpointCols={breakPoints}
+            className={classes.myMasonryGrid}
+            columnClassName={classes.myMasonryGridColumn}
+          >
+            {props.list &&
+              props.list.length > 0 &&
+              props.list.map((note, index) => (
+                <Paper
+                  key={index}
+                  elevation={4}
+                  className={classes.gridNoteCss}
+                  style={{
+                    margin: "8px",
+                    borderColor:
+                      theme.palette[note.color] === theme.palette.default
+                        ? theme.palette.outline
+                        : theme.palette[note.color],
+                    backgroundColor: theme.palette[note.color],
+                  }}
+                  onMouseEnter={() => {
+                    handleShowMenu(note);
+                  }}
+                  onMouseLeave={() => {
+                    handleShowMenu(note);
+                  }}
+                >
+                  <div style={{ display: "flex" }}>
+                    <TextareaAutosize
+                      className={classes.textareaInput}
+                      style={{ fontSize: "18px", fontWeight: "bold" }}
+                      type="text"
+                      placeholder="Title"
+                      value={note.title}
+                      disabled={true}
+                    />
 
-                {note._id == selectedNote && (
-                  <IconButton
-                    style={{ position: "relative" }}
-                    onClick={() =>
-                      props.handleUpdateNote({
-                        _id: note._id,
-                        isPinned: !note.isPinned,
-                      })
-                    }
-                  >
-                    {note?.isPinned ? (
-                      <FavoriteOutlined className={classes.pinIconCss} />
-                    ) : (
-                      <FavoriteIcon className={classes.pinIconCss} />
+                    {note._id == selectedNote && (
+                      <IconButton
+                        style={{ position: "relative" }}
+                        onClick={() =>
+                          props.handleUpdateNote({
+                            _id: note._id,
+                            isPinned: !note.isPinned,
+                          })
+                        }
+                      >
+                        {note?.isPinned ? (
+                          <FavoriteOutlined className={classes.pinIconCss} />
+                        ) : (
+                          <FavoriteIcon className={classes.pinIconCss} />
+                        )}
+                      </IconButton>
                     )}
-                  </IconButton>
-                )}
-              </div>
-              <TextareaAutosize
-                className={classes.textareaInput}
-                style={{ fontSize: "16px" }}
-                type="text"
-                placeholder="Description"
-                disabled={true}
-                value={note.description}
-              />
+                  </div>
+                  <TextareaAutosize
+                    className={classes.textareaInput}
+                    style={{ fontSize: "16px" }}
+                    type="text"
+                    placeholder="Description"
+                    disabled={true}
+                    value={note.description}
+                  />
 
-              {note._id == selectedNote ? (
-                <Menubar
-                  handleNoteColorChange={color => {
-                    props.handleUpdateNote({ _id: note._id, color: color });
-                  }}
-                  handleDeleteNote={() => {
-                    props.handleDeleteNote(note);
-                  }}
-                />
-              ) : (
-                <div style={{ height: "30px" }}></div>
-              )}
-            </Paper>
-          ))}
-      </Masonry>
+                  {note._id == selectedNote ? (
+                    <Menubar
+                      colorPallete
+                      addImage
+                      archiveNote
+                      deleteNote
+                      handleNoteColorChange={color => {
+                        props.handleUpdateNote({ _id: note._id, color: color });
+                      }}
+                      handleDeleteNote={() => {
+                        props.handleDeleteNote(note);
+                      }}
+                      handleArchieveNote={() => {
+                        props.handleArchieveNote(note);
+                      }}
+                    />
+                  ) : (
+                    <div style={{ height: "30px" }}></div>
+                  )}
+                </Paper>
+              ))}
+          </Masonry>
+        </Grid>
+      ) : (
+        <EmptyNotes sidebar={props.sidebar} />
+      )}
     </Grid>
   );
 }

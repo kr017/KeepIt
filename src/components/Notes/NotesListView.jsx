@@ -5,6 +5,7 @@ import Menubar from "./Menubar";
 import TextareaAutosize from "react-textarea-autosize";
 import FavoriteOutlined from "@material-ui/icons/FavoriteOutlined";
 import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
+import { EmptyNotes } from "./EmptyNotes";
 
 const useStyles = makeStyles(theme => ({
   gridNoteCss: {
@@ -42,90 +43,100 @@ export default function NotesListView(props) {
   function handleShowMenu(note) {
     setSelectedNote(note._id);
   }
-
+  console.log(props.list);
   return (
     <Grid>
-      {props?.list &&
-        props?.list?.map((note, index) => (
-          <Paper
-            key={index}
-            elevation={4}
-            className={classes.noteCss}
-            style={{
-              borderColor:
-                theme.palette[note.color] === theme.palette.default
-                  ? theme.palette.outline
-                  : theme.palette[note.color],
-              backgroundColor: theme.palette[note.color],
-            }}
-            onMouseEnter={() => {
-              handleShowMenu(note);
-            }}
-            onMouseLeave={() => {
-              handleShowMenu(note);
-            }}
-          >
-            <List>
-              <div style={{ display: "flex" }}>
-                <TextareaAutosize
-                  className={classes.textareaInput}
-                  style={{ fontSize: "18px", fontWeight: "bold" }}
-                  type="text"
-                  // placeholder="Title"
-                  value={note.title}
-                  disabled={true}
-                />
+      {props.list && props.list.length > 0 ? (
+        <Grid>
+          {props?.list &&
+            props?.list?.map((note, index) => (
+              <Paper
+                key={index}
+                elevation={4}
+                className={classes.noteCss}
+                style={{
+                  borderColor:
+                    theme.palette[note.color] === theme.palette.default
+                      ? theme.palette.outline
+                      : theme.palette[note.color],
+                  backgroundColor: theme.palette[note.color],
+                }}
+                onMouseEnter={() => {
+                  handleShowMenu(note);
+                }}
+                onMouseLeave={() => {
+                  handleShowMenu(note);
+                }}
+              >
+                <List>
+                  <div style={{ display: "flex" }}>
+                    <TextareaAutosize
+                      className={classes.textareaInput}
+                      style={{ fontSize: "18px", fontWeight: "bold" }}
+                      type="text"
+                      // placeholder="Title"
+                      value={note.title}
+                      disabled={true}
+                    />
 
-                {note._id == selectedNote && (
-                  <IconButton
-                    style={{ position: "relative" }}
-                    onClick={() =>
-                      props.handleUpdateNote({
-                        _id: note._id,
-                        isPinned: !note.isPinned,
-                      })
-                    }
-                  >
-                    {note?.isPinned ? (
-                      <FavoriteOutlined className={classes.pinIconCss} />
-                    ) : (
-                      <FavoriteIcon className={classes.pinIconCss} />
+                    {note._id == selectedNote && (
+                      <IconButton
+                        style={{ position: "relative" }}
+                        onClick={() =>
+                          props.handleUpdateNote({
+                            _id: note._id,
+                            isPinned: !note.isPinned,
+                          })
+                        }
+                      >
+                        {note?.isPinned ? (
+                          <FavoriteOutlined className={classes.pinIconCss} />
+                        ) : (
+                          <FavoriteIcon className={classes.pinIconCss} />
+                        )}
+                      </IconButton>
                     )}
-                  </IconButton>
-                )}
-              </div>
-              <TextareaAutosize
-                className={classes.textareaInput}
-                style={{ fontSize: "16px" }}
-                type="text"
-                // placeholder="Description"
-                disabled={true}
-                value={note.description}
-              />
-              {note._id == selectedNote ? (
-                <Menubar
-                  handleNoteColorChange={color => {
-                    props.handleUpdateNote({
-                      _id: note._id,
-                      color: color,
-                    });
-                  }}
-                  handleDeleteNote={() => {
-                    props.handleDeleteNote(note);
-                  }}
-                  handleAddImage={e => {
-                    props.handleUpdateImage({
-                      event: e,
-                      _id: note._id,
-                    });
-                  }}
-                />
-              ) : (
-                <div style={{ height: "30px" }}></div>
-              )}
-            </List>
-          </Paper>
-        ))}
+                  </div>
+                  <TextareaAutosize
+                    className={classes.textareaInput}
+                    style={{ fontSize: "16px" }}
+                    type="text"
+                    // placeholder="Description"
+                    disabled={true}
+                    value={note.description}
+                  />
+                  {note._id == selectedNote ? (
+                    <Menubar
+                      colorPallete={false} //{props.sidebar === "Trash" ? false : true}
+                      addImage
+                      archiveNote
+                      deleteNote
+                      handleNoteColorChange={color => {
+                        props.handleUpdateNote({
+                          _id: note._id,
+                          color: color,
+                        });
+                      }}
+                      handleDeleteNote={() => {
+                        props.handleDeleteNote(note);
+                      }}
+                      handleAddImage={e => {
+                        props.handleUpdateImage({
+                          event: e,
+                          _id: note._id,
+                        });
+                      }}
+                    />
+                  ) : (
+                    <div style={{ height: "30px" }}></div>
+                  )}
+                </List>
+              </Paper>
+            ))}
+        </Grid>
+      ) : (
+        <EmptyNotes sidebar={props.sidebar} />
+      )}
     </Grid>
   );
 }

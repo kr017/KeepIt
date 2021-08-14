@@ -13,6 +13,7 @@ const userReducer = (state, action) => {
         token: action.payload.token,
         theme: userChoice?.theme ? userChoice.theme : "light",
         view: userChoice?.view ? userChoice.view : "grid",
+        sidebar: "Notes",
       };
 
     case "LOGOUT":
@@ -32,6 +33,7 @@ const userReducer = (state, action) => {
           email: token?.email,
           theme: action.payload?.theme ? action.payload?.theme : "light",
           view: action.payload?.view ? action.payload?.view : "grid",
+          sidebar: action.payload?.sidebar ? action.payload?.sidebar : "Notes",
         };
       }
     // return null;

@@ -7,10 +7,13 @@ import ReminderIcon from "@material-ui/icons/AddAlertOutlined";
 import AddPersonIcon from "@material-ui/icons/PersonAddOutlined";
 import ImageIcon from "@material-ui/icons/ImageOutlined";
 import ArchiveIcon from "@material-ui/icons/ArchiveOutlined";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import MoreIcon from "@material-ui/icons/MoreVertOutlined";
 import UndoIcon from "@material-ui/icons/UndoOutlined";
 import RedoIcon from "@material-ui/icons/RedoOutlined";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import RestoreIcon from "@material-ui/icons/RestoreFromTrashOutlined";
 import ColorPallete from "./ColorPallete";
 
 const useStyles = makeStyles(theme => ({
@@ -41,83 +44,38 @@ export default function Menubar(props) {
   const classes = useStyles();
   const [showColorPallete, setShowColorPallete] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const {
+    colorPallete,
+    addImage,
+    archiveNote,
+    unarchiveNote,
+    deleteNote,
+    closeNote,
+    permanentDeleteNote,
+    restoreNote,
+    handleArchieveNote,
+    handleUnarchieveNote,
+    handleDeleteNote,
+    handleNoteColorChange,
+    handlePermanentDeleteNote,
+    handleRestoreNote,
+  } = props;
 
-  const handleItemHover = (e, itemId, action) => {
-    if (action === "COLOR_CHANGE") {
-      setAnchorEl(e.currentTarget);
-      setShowColorPallete(!showColorPallete);
-    } else {
-      return;
-    }
-  };
-  const handleUploadClick = event => {
-    var file = event.target.files[0];
-    const reader = new FileReader();
-    var url = reader.readAsDataURL(file);
-  };
-  const handleItemMouseOut = (e, itemId, action) => {
-    if (action === "COLOR_CHANGE") {
-      setAnchorEl(!anchorEl);
-      setShowColorPallete(!showColorPallete);
-    } else {
-      setAnchorEl(e.currentTarget);
-      setShowColorPallete(false);
-    }
-  };
-
-  const handleItemClick = (e, itemId, action) => {
-    if (action === "ADD_IMAGE") {
-      console.log(e.target.files);
-    } else {
-      return;
-    }
-  };
   const handlePalleteClose = () => {
     setAnchorEl(null);
     setShowColorPallete(!showColorPallete);
   };
-  const handleNoteColorChange = color => {
-    props.handleNoteColorChange(color);
-  };
+  // const handleNoteColorChange = color => {
+  //   props.handleNoteColorChange(color);
+  // };
 
-  const handleNoteDelete = () => {
-    props.handleDeleteNote();
-  };
+  // const handleNoteDelete = () => {
+  //   props.handleDeleteNote();
+  // };
+
   let list = [
     // { icon: <ReminderIcon />, label: "Remind me", action: "REMIND" },
     // { icon: <AddPersonIcon />, label: "Collaborator" },
-    {
-      icon: <PaletteIcon />,
-      label: "Remind me",
-      action: "COLOR_CHANGE",
-    },
-    {
-      icon: (
-        <span>
-          <label for="file-input">
-            <input
-              type="file"
-              accept="image/*"
-              style={
-                {
-                  // opacity: 0,
-                  // display: "none",
-                }
-              }
-              hidden
-              id="file-input"
-              onClick={handleItemClick}
-              onChange={handleUploadClick}
-            />
-            <ImageIcon />
-          </label>
-        </span>
-      ),
-      label: "Add Image",
-      action: "ADD_IMAGE",
-    },
-    { icon: <ArchiveIcon />, label: "Archive", action: "ARCHIVE" },
-
     // { icon: <MoreIcon />, label: "More", action: "MORE" },
     // {
     //   icon: (
@@ -136,79 +94,151 @@ export default function Menubar(props) {
     //   label: "Redo",
     // },
   ];
-  if (props?.isCreateOrUpdate) {
-    list.push({
-      icon: (
-        <span
-          style={{
-            fontSize: "16px",
-            textTransform: "capitalize",
-            position: "absolute",
-            right: "0px",
-          }}
-          className={classes.closeButtonCss}
-        >
-          close
-        </span>
-      ),
-      // label: "Close",
-      action: "CLOSE",
-    });
-  } else {
-    list.push({
-      icon: (
-        <span
-          style={{
-            fontSize: "16px",
-            textTransform: "capitalize",
-            position: "absolute",
-            right: "0px",
-            cursor: "pointer",
-          }}
-          onClick={handleNoteDelete}
-        >
-          <DeleteOutlinedIcon />
-        </span>
-      ),
-      label: "Delete",
-      action: "DELETE",
-    });
-  }
 
   return (
     <div>
       <List>
-        {list.map((item, index) => (
-          <div
-            key={index}
-            className={classes.listItemCss}
-            onMouseOver={e => {
-              handleItemHover(e, index, item.action);
-            }}
-            // onClick={e => {
-            //   handleItemClick(e, index, item.action);
-            // }}
-            // onMouseOut={e => {
-            //   handleItemMouseOut(e, index, item.action);
-            // }}
-          >
+        <div className={classes.listItemCss}>
+          {/* color palllete */}
+          {colorPallete && (
             <span className={classes.iconCss}>
-              {item?.label ? (
-                <Tooltip
-                  key={index}
-                  title={item.label}
-                  // style={{
-                  //   position: "absolute",
-                  // }}
+              <Tooltip key={"color"} title={"Color Palette"}>
+                <span
+                  onClick={e => {
+                    setAnchorEl(e.currentTarget);
+                    setShowColorPallete(!showColorPallete);
+                  }}
+                  onMouseOver={e => {
+                    setAnchorEl(e.currentTarget);
+                    setShowColorPallete(!showColorPallete);
+                  }}
+                  onBlur={e => {
+                    setAnchorEl(null);
+                    setShowColorPallete(!showColorPallete);
+                  }}
                 >
-                  {item.icon}
-                </Tooltip>
-              ) : (
-                <>{item.icon}</>
-              )}
+                  <PaletteIcon />
+                </span>
+              </Tooltip>
             </span>
-          </div>
-        ))}
+          )}
+
+          {/* add image */}
+          {addImage && (
+            <span className={classes.iconCss}>
+              <Tooltip key={"image"} title={"Color Palette"}>
+                <span>
+                  <label for="file-input">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      id="file-input"
+                      // onClick={e => {
+                      //   null; // handleImageUpload;
+                      // }}
+                      // onChange={e => {
+                      //   null;
+                      // }}
+                    />
+                    <ImageIcon />
+                  </label>
+                </span>
+              </Tooltip>
+            </span>
+          )}
+
+          {/* archieve note */}
+          {archiveNote && (
+            <span className={classes.iconCss}>
+              <Tooltip key={"archieve"} title={"Color Palette"}>
+                <span
+                  onClick={e => {
+                    handleArchieveNote();
+                  }}
+                >
+                  <ArchiveIcon />
+                </span>
+              </Tooltip>
+            </span>
+          )}
+
+          {/* unarchieve note */}
+          {unarchiveNote && (
+            <span className={classes.iconCss}>
+              <Tooltip key={"archieve"} title={"Color Palette"}>
+                <span
+                  onClick={e => {
+                    handleUnarchieveNote();
+                  }}
+                >
+                  <ArchiveIcon />
+                </span>
+              </Tooltip>
+            </span>
+          )}
+
+          {/* delete note */}
+          {deleteNote && (
+            <span
+              style={{
+                fontSize: "16px",
+                textTransform: "capitalize",
+                position: "absolute",
+                right: "0px",
+                cursor: "pointer",
+              }}
+              onClick={handleDeleteNote}
+            >
+              <DeleteOutlinedIcon />
+            </span>
+          )}
+
+          {/* close note */}
+          {closeNote && (
+            <span
+              style={{
+                fontSize: "16px",
+                textTransform: "capitalize",
+                position: "absolute",
+                right: "0px",
+              }}
+              className={classes.closeButtonCss}
+            >
+              close
+            </span>
+          )}
+
+          {/* permanent delete */}
+          {permanentDeleteNote && (
+            <span className={classes.iconCss}>
+              <Tooltip key={"permanentDelete"} title={"Delete forever"}>
+                <span
+                  onClick={e => {
+                    handlePermanentDeleteNote();
+                  }}
+                >
+                  <DeleteForeverIcon />
+                </span>
+              </Tooltip>
+            </span>
+          )}
+
+          {/* restore delete */}
+          {restoreNote && (
+            <span className={classes.iconCss}>
+              <Tooltip key={"restore"} title={"Restore"}>
+                <span
+                  onClick={e => {
+                    handleRestoreNote();
+                  }}
+                >
+                  <RestoreIcon />
+                </span>
+              </Tooltip>
+            </span>
+          )}
+        </div>
       </List>
       <ColorPallete
         open={showColorPallete} //(anchorEl)}

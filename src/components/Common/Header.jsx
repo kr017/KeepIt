@@ -99,18 +99,21 @@ export function Header() {
     let choice = {
       theme: userState?.theme,
       view: userState?.view,
+      sidebar: userState?.sidebar,
     };
 
     if (key === "theme") {
       choice = {
         view: userState?.view,
         theme: userState?.theme === "light" ? "dark" : "light",
+        sidebar: userState?.sidebar,
       };
     }
     if (key === "view") {
       choice = {
         view: userState?.view === "grid" ? "list" : "grid",
         theme: userState?.theme,
+        sidebar: userState?.sidebar,
       };
     }
     setStorage("choice", choice);

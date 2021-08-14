@@ -8,6 +8,9 @@ import ArchiveIcon from "@material-ui/icons/Archive";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";
 import NotificationsNoneOutlinedIcon from "@material-ui/icons/NotificationsNoneOutlined";
+import { useLogin, useNote } from "../../context";
+import { setStorage } from "../../utils/Theme/utilities.js/storageUtil";
+import { getAllNotes, getTrashNotes } from "../../apis/noteServices";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,6 +102,8 @@ export default function Sidebar() {
   const classes = useStyles();
 
   const [openMenu, setOpenMenu] = useState(false);
+  const { userState, userDispatch } = useLogin();
+  const { notesState, notesDispatch } = useNote();
 
   const [options, setOptions] = useState([
     {
@@ -108,8 +113,8 @@ export default function Sidebar() {
         <WbIncandescentOutlinedIcon style={{ transform: "rotateX(180deg)" }} />
       ),
     },
-    { label: "Remainders", icon: <NotificationsNoneOutlinedIcon /> },
-    { label: "Edit Labels", icon: <EditOutlinedIcon /> },
+    // { label: "Remainders", icon: <NotificationsNoneOutlinedIcon /> },
+    // { label: "Edit Labels", icon: <EditOutlinedIcon /> },
     { label: "Archive", icon: <ArchiveIcon /> },
     { label: "Trash", icon: <DeleteForeverIcon /> },
   ]);
@@ -117,7 +122,33 @@ export default function Sidebar() {
   const toggleDrawer = () => {
     setOpenMenu(!openMenu);
   };
+  const handleSidebarClick = key => {
+    if (key === "Archive") {
+      getAllNotes({ isArchieved: true })
+        .then(function (res) {
+          notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        })
+        .catch(err => {});
+    } else if (key === "Trash") {
+      getTrashNotes().then(function (res) {
+        notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+      });
+    } else {
+      getAllNotes()
+        .then(function (res) {
+          notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        })
+        .catch(err => {});
+    }
+    let choice = {
+      theme: userState?.theme,
+      view: userState?.view,
+      sidebar: key ? key : userState?.sidebar,
+    };
 
+    setStorage("choice", choice);
+    userDispatch({ type: "SETCHOICE", payload: choice });
+  };
   return (
     <div className={classes.root}>
       {openMenu ? (
@@ -148,6 +179,7 @@ export default function Sidebar() {
                       : classes.drawerListItemCss
                   }
                   key={index}
+                  onClick={() => handleSidebarClick(anchor.label)}
                 >
                   <span className={classes.drawerIconCss}>{anchor.icon}</span>
                   <span className={classes.drawerLabelCss}>{anchor.label}</span>
@@ -169,6 +201,7 @@ export default function Sidebar() {
                       ? classes.ListItemCss_Active
                       : classes.ListItemCss
                   }
+                  onClick={() => handleSidebarClick(anchor.label)}
                 >
                   <span>{anchor.icon}</span>
                 </span>

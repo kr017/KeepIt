@@ -15,6 +15,9 @@ export function updateNote(data) {
 export function deleteNote(data) {
   return axiosClient.post("/api/deleteNote", data);
 }
+export function archieveNote(data) {
+  return axiosClient.post("/api/archieveNote", data);
+}
 
 export function getTrashNotes() {
   return axiosClient.get("/api/trashNotes");

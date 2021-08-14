@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import {
+  archieveNote,
   deleteNote,
   getAllNotes,
   getTrashNotes,
@@ -20,22 +21,29 @@ import NotesListView from "./NotesListView";
 export default function NotesSection() {
   const { userState } = useLogin();
 
-  // const [notes, setNotes] = useState([]);
   const { notesState, notesDispatch } = useNote();
+
   /**
    *
    */
   function loadList() {
-    // getTrashNotes()
-    //   .then(function (res) {
-    //     notesDispatch({ type: "GET_NOTES", payload: res.data.data });
-    //   })
-    //   .catch(err => {});
-    getAllNotes()
-      .then(function (res) {
+    if (userState?.sidebar === "Archive") {
+      getAllNotes({ isArchieved: true })
+        .then(function (res) {
+          notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        })
+        .catch(err => {});
+    } else if (userState?.sidebar === "Trash") {
+      getTrashNotes().then(function (res) {
         notesDispatch({ type: "GET_NOTES", payload: res.data.data });
-      })
-      .catch(err => {});
+      });
+    } else {
+      getAllNotes()
+        .then(function (res) {
+          notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        })
+        .catch(err => {});
+    }
   }
 
   useEffect(() => {
@@ -64,22 +72,39 @@ export default function NotesSection() {
       .catch(err => {});
   }
 
+  /**
+   *
+   */
+  function handleArchieveNote(note) {
+    archieveNote({ note_id: note._id })
+      .then(res => {
+        notesDispatch({ type: "UPDATE_NOTE", payload: { _id: note._id } });
+      })
+      .catch(err => {});
+  }
+
   return (
     <div>
-      <CreateNote
-        loadDetails={() => {
-          loadList();
-        }}
-      />
+      {userState.sidebar === "Notes" && (
+        <CreateNote
+          loadDetails={() => {
+            loadList();
+          }}
+        />
+      )}
       {userState.view === "list" ? (
         <NotesListView
+          sidebar={userState.sidebar ? userState.sidebar : "Notes"}
           list={notesState.notes}
+          handleArchieveNote={handleArchieveNote}
           handleDeleteNote={handleDeleteNote}
           handleUpdateNote={handleUpdateNote}
         />
       ) : (
         <NotesGridView
+          sidebar={userState.sidebar ? userState.sidebar : "Notes"}
           list={notesState.notes}
+          handleArchieveNote={handleArchieveNote}
           handleDeleteNote={handleDeleteNote}
           handleUpdateNote={handleUpdateNote}
         />

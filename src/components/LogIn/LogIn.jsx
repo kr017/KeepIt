@@ -1,6 +1,6 @@
-import { Button, CssBaseline, Grid } from "@material-ui/core";
-import { useState, useEffect } from "react";
-import { useReducer } from "react";
+import { Button, Grid } from "@material-ui/core";
+import { useState } from "react";
+import { useHistory } from "react-router";
 import logo from "../../logo.png";
 import { makeStyles } from "@material-ui/core/styles";
 import { OutLinedInput } from "../Common/TextInputs";
@@ -9,6 +9,7 @@ import ErrorIcon from "@material-ui/icons/Error";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { checkMail, login } from "../../apis/userService";
 import { useLogin } from "../../context";
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -55,9 +56,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function LogIn(props) {
+export function LogIn() {
   const classes = useStyles();
+  const history = useHistory();
+
   const [loading, setLoading] = useState(false);
+  const [passwordLayout, setPasswordLayout] = useState(false);
 
   const { userDispatch } = useLogin();
 
@@ -75,12 +79,6 @@ export function LogIn(props) {
     label: "Enter your password",
     placeHolder: "Enter your password",
   });
-
-  const [passwordLayout, setPasswordLayout] = useState(false);
-  //   useEffect(() => {
-  //     // Update the document title using the browser API
-  //     document.title = `You clicked ${count} times`;
-  //   });
 
   const submitUsername = () => {
     setLoading(true);
@@ -112,7 +110,7 @@ export function LogIn(props) {
 
         userDispatch({ type: "LOGIN", payload: res.data.data });
 
-        props.history.push("/");
+        history.push("/");
         if (res?.data?.data?.token) {
           localStorage.setItem("hint", JSON.stringify(res.data.data));
         }
@@ -131,6 +129,7 @@ export function LogIn(props) {
         setLoading(false);
       });
   };
+
   return (
     <div className={classes.root}>
       <Grid container className={classes.containerCss}>

@@ -23,7 +23,10 @@ const notesReducer = (state, action) => {
           return note;
         }),
       };
-
+    case "ARCHIEVE_NOTE":
+      return {
+        notes: state.notes.filter(note => note._id !== action.payload._id),
+      };
     case "DELETE_NOTE":
       return {
         notes: state.notes.filter(note => note._id !== action.payload._id),
