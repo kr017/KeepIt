@@ -81,7 +81,7 @@ export default function NotesListView(props) {
               disabled={true}
             />
 
-            {note._id == selectedNote && (
+            {note._id === selectedNote && (
               <IconButton
                 style={{ position: "relative" }}
                 onClick={() =>
@@ -108,7 +108,7 @@ export default function NotesListView(props) {
             value={note.description}
           />
 
-          {note._id == selectedNote ? (
+          {note._id === selectedNote ? (
             <Menubar
               colorPallete={props.sidebar === "Trash" ? false : true}
               // addImage={props.sidebar === "Trash" ? false : true}

@@ -8,7 +8,6 @@ const useStyles = makeStyles(theme => ({
 export const OutLinedInput = props => {
   const classes = useStyles();
   const {
-    id,
     label,
     showLabel,
     value,

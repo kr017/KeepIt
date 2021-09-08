@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useLogin } from "../context";
 
 const axiosClient = axios.create({
   baseURL: `https://gkeepback.herokuapp.com/`, //`http://localhost:9000/`,
@@ -32,7 +31,7 @@ axiosClient.interceptors.response.use(
   function (error) {
     let res = error.response;
 
-    if (res.status == 401) {
+    if (res.status === 401) {
       localStorage.clear();
       window.location.href = "http://localhost:3000/signin";
 

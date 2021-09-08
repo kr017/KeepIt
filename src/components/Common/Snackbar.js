@@ -1,5 +1,5 @@
 import { Snackbar } from "@material-ui/core";
-import React, { useState } from "react";
+import React from "react";
 
 export const SnackbarView = props => {
   const { open } = props;

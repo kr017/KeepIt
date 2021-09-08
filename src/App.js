@@ -2,7 +2,7 @@ import "./App.css";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import { SignIn } from "./components/SignIn/SignIn";
 import { SignUp } from "./components/SignUp/SignUp";
-import { BrowserRouter, Switch, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { PrivateRoutes } from "./PrivateRoutes";
 
 function App() {

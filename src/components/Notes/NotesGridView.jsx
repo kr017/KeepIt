@@ -11,7 +11,7 @@ import { EmptyNotes } from "./EmptyNotes";
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
     display: "-webkit-box",
-    display: "-ms-flexbox",
+    // display: "-ms-flexbox",
     display: "flex",
     width: "auto",
   },
@@ -118,7 +118,7 @@ export default function NotesGridView(props) {
             disabled={true}
           />
 
-          {note._id == selectedNote && props.sidebar !== "Trash" && (
+          {note._id === selectedNote && props.sidebar !== "Trash" && (
             <IconButton
               style={{ position: "relative" }}
               onClick={() =>
@@ -145,7 +145,7 @@ export default function NotesGridView(props) {
           value={note.description}
         />
 
-        {note._id == selectedNote ? (
+        {note._id === selectedNote ? (
           <Menubar
             colorPallete={props.sidebar === "Trash" ? false : true}
             // addImage={props.sidebar === "Trash" ? false : true}

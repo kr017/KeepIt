@@ -1,17 +1,7 @@
 import React, { useState } from "react";
-import {
-  Avatar,
-  Divider,
-  List,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import NotesIcon from "@material-ui/icons/AccountBalanceWalletSharp";
+import { List } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import LabelOutlinedIcon from "@material-ui/icons/LabelOutlined";
 import ArchiveIcon from "@material-ui/icons/Archive";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";

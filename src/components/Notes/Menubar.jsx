@@ -1,16 +1,10 @@
 import React, { useState } from "react";
-import { Button, IconButton, List, ListItem, Tooltip } from "@material-ui/core";
+import { List, Tooltip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import NotesIcon from "@material-ui/icons/AccountBalanceWalletSharp";
 import PaletteIcon from "@material-ui/icons/PaletteOutlined";
-import ReminderIcon from "@material-ui/icons/AddAlertOutlined";
-import AddPersonIcon from "@material-ui/icons/PersonAddOutlined";
 import ImageIcon from "@material-ui/icons/ImageOutlined";
 import ArchiveIcon from "@material-ui/icons/ArchiveOutlined";
 import UnarchiveIcon from "@material-ui/icons/Unarchive";
-import MoreIcon from "@material-ui/icons/MoreVertOutlined";
-import UndoIcon from "@material-ui/icons/UndoOutlined";
-import RedoIcon from "@material-ui/icons/RedoOutlined";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import RestoreIcon from "@material-ui/icons/RestoreFromTrashOutlined";

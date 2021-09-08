@@ -3,27 +3,22 @@ import {
   Avatar,
   IconButton,
   InputBase,
-  Menu,
   Popover,
   Toolbar,
   Typography,
-  useMediaQuery,
 } from "@material-ui/core";
-import { alpha, makeStyles, useTheme } from "@material-ui/core/styles";
+import { alpha, makeStyles } from "@material-ui/core/styles";
 import WbSunnySharpIcon from "@material-ui/icons/WbSunnySharp";
 import WbSunnyOutlinedIcon from "@material-ui/icons/WbSunnyOutlined";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import ListViewIcon from "@material-ui/icons/ViewAgendaOutlined";
 import GridViewIcon from "@material-ui/icons/ViewQuiltOutlined";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import UserInfoMenu from "../Dashboard/UserInfoMenu";
 import logo from "../../logo.png";
 import MenuDrawer from "./MenuDrawer";
-import {
-  getStorage,
-  setStorage,
-} from "../../utils/Theme/utilities.js/storageUtil";
+import { setStorage } from "../../utils/Theme/utilities.js/storageUtil";
 import { useLogin, useNote } from "../../context";
 import { getAllNotes } from "../../apis/noteServices";
 const useStyles = makeStyles(theme => ({

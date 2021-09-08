@@ -4,11 +4,9 @@ import { themes } from "../../utils/Theme/Theme";
 import { Header } from "../Common/Header";
 import Sidebar from "../Common/Sidebar";
 import NotesSection from "../Notes/NotesSection";
-import { useLogin } from "../../context";
 import { getStorage } from "../../utils/Theme/utilities.js/storageUtil";
 
 export function Dashboard() {
-  const { userState } = useLogin();
   const userChoice = getStorage("choice");
 
   const preferredTheme = userChoice?.theme ? userChoice?.theme : "light"; //"light"; //user.theme;

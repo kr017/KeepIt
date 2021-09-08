@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { ClickAwayListener, Drawer, List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import NotesIcon from "@material-ui/icons/AccountBalanceWalletSharp";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import LabelOutlinedIcon from "@material-ui/icons/LabelOutlined";
 import ArchiveIcon from "@material-ui/icons/Archive";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";
-import NotificationsNoneOutlinedIcon from "@material-ui/icons/NotificationsNoneOutlined";
 import { useLogin, useNote } from "../../context";
 import { setStorage } from "../../utils/Theme/utilities.js/storageUtil";
 import { getAllNotes, getTrashNotes } from "../../apis/noteServices";
