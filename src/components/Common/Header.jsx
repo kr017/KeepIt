@@ -38,8 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
   inputRoot: {
     color: "inherit",
-    width: "50vw",
-    padding: "5px",
+
     [theme.breakpoints.down("xs")]: {
       display: "none",
     },

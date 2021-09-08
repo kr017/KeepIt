@@ -55,12 +55,12 @@ export default function UserInfoMenu(props) {
 
   const handleLogOut = () => {
     userDispatch({ type: "LOGOUT" });
-    history.push("/login");
+    history.push("/signin");
   };
   return (
     <div className={classes.root}>
       <div className={classes.AvtarContainerCss}>
-        <div>
+        <div style={{ marginBottom: "10px" }}>
           <Avatar
             alt={userState.name}
             src="/static/images/avatar/1.jpg"

@@ -72,6 +72,10 @@ export default function CreateNote(props) {
     addNote(requestParams)
       .then(function (res) {
         notesDispatch({ type: "ADD_NOTE", payload: res.data.data });
+        setTitle("");
+        setDescription("");
+        setNoteColor("");
+        setShowShort(true);
       })
       .catch(err => {});
   }

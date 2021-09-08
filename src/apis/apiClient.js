@@ -2,7 +2,7 @@ import axios from "axios";
 import { useLogin } from "../context";
 
 const axiosClient = axios.create({
-  baseURL: `http://localhost:5000/`,
+  baseURL: `http://localhost:9000/`,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -34,7 +34,7 @@ axiosClient.interceptors.response.use(
 
     if (res.status == 401) {
       localStorage.clear();
-      window.location.href = "http://localhost:3000/login";
+      window.location.href = "http://localhost:3000/signin";
 
       // userDispatch({ type: "LOGOUT" });
     }

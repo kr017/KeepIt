@@ -6,6 +6,6 @@ export const PrivateRoutes = ({ ...props }) => {
   const { userState } = useLogin();
 
   return (
-    <>{userState.token ? <Route {...props} /> : <Redirect to="/login" />}</>
+    <>{userState.token ? <Route {...props} /> : <Redirect to="/signin" />}</>
   );
 };

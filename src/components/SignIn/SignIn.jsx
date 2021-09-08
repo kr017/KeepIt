@@ -9,6 +9,7 @@ import ErrorIcon from "@material-ui/icons/Error";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { checkMail, login } from "../../apis/userService";
 import { useLogin } from "../../context";
+import { Snackbar, SnackbarView } from "../Common/Snackbar";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,16 +22,16 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     width: "450px",
+    [theme.breakpoints.down("sm")]: {
+      border: "none",
+    },
     border: `1px solid #dadce0`, //${theme.palette.outline}`,
     borderRadius: "8px",
   },
   content: {
     paddingTop: "40px",
   },
-  emailInput: {
-    width: "310px",
-    borderColor: "red",
-  },
+
   errorMsgCss: {
     marginLeft: "-14px",
     color: "#D93025",
@@ -56,7 +57,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function LogIn() {
+export function SignIn() {
   const classes = useStyles();
   const history = useHistory();
 
@@ -89,16 +90,22 @@ export function LogIn() {
         setPasswordLayout(true);
       })
       .catch(err => {
-        setUsername(prevState => ({
-          ...prevState,
-          error: true,
-          errorMsg: (
-            <span className={classes.errorMsgCss}>
-              <ErrorIcon />
-              Couldn't find you KeepIt account
-            </span>
-          ),
-        }));
+        if (err?.response?.status === 400) {
+          setUsername(prevState => ({
+            ...prevState,
+            error: true,
+            errorMsg: (
+              <span className={classes.errorMsgCss}>
+                <ErrorIcon />
+                Couldn't find you KeepIt account
+              </span>
+            ),
+          }));
+        }
+        // else {
+        //   <SnackbarView open={true} />;
+        // }
+
         setLoading(false);
       });
   };
@@ -157,7 +164,6 @@ export function LogIn() {
               <OutLinedInput
                 label={username.label}
                 placeHolder={username.placeHolder}
-                className={classes.emailInput}
                 value={username.value}
                 error={username.error}
                 errorMsg={username.errorMsg}
@@ -179,7 +185,10 @@ export function LogIn() {
             </Grid>
             <Grid container item className={classes.actionAreaCss}>
               <Grid item>
-                <span style={{ color: "#1a73e8", cursor: "pointer" }}>
+                <span
+                  style={{ color: "#1a73e8", cursor: "pointer" }}
+                  onClick={() => history.push("/signup")}
+                >
                   Create Account
                 </span>
               </Grid>
@@ -216,7 +225,6 @@ export function LogIn() {
               <OutLinedInput
                 label={password.label}
                 placeHolder={password.placeHolder}
-                className={classes.emailInput}
                 value={password.value}
                 error={password.error}
                 errorMsg={password.errorMsg}

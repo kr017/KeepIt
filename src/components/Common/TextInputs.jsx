@@ -1,7 +1,12 @@
-import { TextField } from "@material-ui/core";
+import { makeStyles, TextField } from "@material-ui/core";
 import { useState } from "react";
-
+const useStyles = makeStyles(theme => ({
+  inputCss: {
+    width: "310px",
+  },
+}));
 export const OutLinedInput = props => {
+  const classes = useStyles();
   const {
     id,
     label,
@@ -10,7 +15,7 @@ export const OutLinedInput = props => {
     error,
     errorMsg,
     placeHolder,
-    className,
+
     handleChange,
     handleKeyPress,
   } = props;
@@ -27,7 +32,7 @@ export const OutLinedInput = props => {
       onClick={e => setActiveLabel(true)}
       helperText={errorMsg}
       color="primary"
-      className={className}
+      className={classes.inputCss}
       onChange={handleChange}
       onKeyPress={handleKeyPress}
     />

@@ -27,11 +27,22 @@ const notesReducer = (state, action) => {
       return {
         notes: state.notes.filter(note => note._id !== action.payload._id),
       };
+    case "UNARCHIEVE_NOTE":
+      return {
+        notes: state.notes.filter(note => note._id !== action.payload._id),
+      };
     case "DELETE_NOTE":
       return {
         notes: state.notes.filter(note => note._id !== action.payload._id),
       };
-
+    case "DELETE_NOTE_PERMANENT":
+      return {
+        notes: state.notes.filter(note => note._id !== action.payload._id),
+      };
+    case "RESTORE_NOTE":
+      return {
+        notes: state.notes.filter(note => note._id !== action.payload._id),
+      };
     // return null;
     default:
       return state;

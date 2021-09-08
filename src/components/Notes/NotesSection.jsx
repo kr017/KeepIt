@@ -3,8 +3,11 @@ import { useEffect } from "react";
 import {
   archieveNote,
   deleteNote,
+  deletePermanentNote,
   getAllNotes,
   getTrashNotes,
+  restoreNote,
+  unArchieveNote,
   updateNote,
 } from "../../apis/noteServices";
 import { useLogin, useNote } from "../../context";
@@ -38,7 +41,7 @@ export default function NotesSection() {
         notesDispatch({ type: "GET_NOTES", payload: res.data.data });
       });
     } else {
-      getAllNotes()
+      getAllNotes({ isArchieved: false })
         .then(function (res) {
           notesDispatch({ type: "GET_NOTES", payload: res.data.data });
         })
@@ -64,10 +67,17 @@ export default function NotesSection() {
   /**
    *
    */
-  function handleDeleteNote(note) {
-    deleteNote({ note_id: note._id })
+  function handleArchieveNote(note) {
+    archieveNote({ note_id: note._id })
       .then(res => {
-        notesDispatch({ type: "DELETE_NOTE", payload: { _id: note._id } });
+        notesDispatch({ type: "ARCHIEVE_NOTE", payload: { _id: note._id } });
+      })
+      .catch(err => {});
+  }
+  function handleUnArchieveNote(note) {
+    unArchieveNote({ note_id: note._id })
+      .then(res => {
+        notesDispatch({ type: "UNARCHIEVE_NOTE", payload: { _id: note._id } });
       })
       .catch(err => {});
   }
@@ -75,10 +85,28 @@ export default function NotesSection() {
   /**
    *
    */
-  function handleArchieveNote(note) {
-    archieveNote({ note_id: note._id })
+  function handleDeleteNote(note) {
+    deleteNote({ note_id: note._id })
       .then(res => {
-        notesDispatch({ type: "UPDATE_NOTE", payload: { _id: note._id } });
+        notesDispatch({ type: "DELETE_NOTE", payload: { _id: note._id } });
+      })
+      .catch(err => {});
+  }
+  function handlePermanentDeleteNote(note) {
+    deletePermanentNote({ note_id: note._id })
+      .then(res => {
+        notesDispatch({
+          type: "DELETE_NOTE_PERMANENT",
+          payload: { _id: note._id },
+        });
+      })
+      .catch(err => {});
+  }
+
+  function handleRestoreNote(note) {
+    restoreNote({ note_id: note._id })
+      .then(res => {
+        notesDispatch({ type: "RESTORE_NOTE", payload: { _id: note._id } });
       })
       .catch(err => {});
   }
@@ -97,7 +125,10 @@ export default function NotesSection() {
           sidebar={userState.sidebar ? userState.sidebar : "Notes"}
           list={notesState.notes}
           handleArchieveNote={handleArchieveNote}
+          handleUnArchieveNote={handleUnArchieveNote}
           handleDeleteNote={handleDeleteNote}
+          handlePermanentDeleteNote={handlePermanentDeleteNote}
+          handleRestoreNote={handleRestoreNote}
           handleUpdateNote={handleUpdateNote}
         />
       ) : (
@@ -105,7 +136,10 @@ export default function NotesSection() {
           sidebar={userState.sidebar ? userState.sidebar : "Notes"}
           list={notesState.notes}
           handleArchieveNote={handleArchieveNote}
+          handleUnArchieveNote={handleUnArchieveNote}
           handleDeleteNote={handleDeleteNote}
+          handlePermanentDeleteNote={handlePermanentDeleteNote}
+          handleRestoreNote={handleRestoreNote}
           handleUpdateNote={handleUpdateNote}
         />
       )}

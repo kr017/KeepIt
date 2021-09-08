@@ -38,6 +38,9 @@ const useStyles = makeStyles(theme => ({
     },
     cursor: "pointer",
   },
+  iconCss: {
+    marginRight: "12px",
+  },
 }));
 
 export default function Menubar(props) {
@@ -48,13 +51,13 @@ export default function Menubar(props) {
     colorPallete,
     addImage,
     archiveNote,
-    unarchiveNote,
+    unArchiveNote,
     deleteNote,
     closeNote,
     permanentDeleteNote,
     restoreNote,
     handleArchieveNote,
-    handleUnarchieveNote,
+    handleNoteUnArchive,
     handleDeleteNote,
     handleNoteColorChange,
     handlePermanentDeleteNote,
@@ -72,28 +75,6 @@ export default function Menubar(props) {
   // const handleNoteDelete = () => {
   //   props.handleDeleteNote();
   // };
-
-  let list = [
-    // { icon: <ReminderIcon />, label: "Remind me", action: "REMIND" },
-    // { icon: <AddPersonIcon />, label: "Collaborator" },
-    // { icon: <MoreIcon />, label: "More", action: "MORE" },
-    // {
-    //   icon: (
-    //     <IconButton disabled>
-    //       <UndoIcon />
-    //     </IconButton>
-    //   ),
-    //   label: "Undo",
-    // },
-    // {
-    //   icon: (
-    //     <IconButton disabled>
-    //       <RedoIcon />
-    //     </IconButton>
-    //   ),
-    //   label: "Redo",
-    // },
-  ];
 
   return (
     <div>
@@ -152,11 +133,7 @@ export default function Menubar(props) {
           {archiveNote && (
             <span className={classes.iconCss}>
               <Tooltip key={"archieve"} title={"Color Palette"}>
-                <span
-                  onClick={e => {
-                    handleArchieveNote();
-                  }}
-                >
+                <span onClick={handleArchieveNote}>
                   <ArchiveIcon />
                 </span>
               </Tooltip>
@@ -164,15 +141,11 @@ export default function Menubar(props) {
           )}
 
           {/* unarchieve note */}
-          {unarchiveNote && (
+          {unArchiveNote && (
             <span className={classes.iconCss}>
               <Tooltip key={"archieve"} title={"Color Palette"}>
-                <span
-                  onClick={e => {
-                    handleUnarchieveNote();
-                  }}
-                >
-                  <ArchiveIcon />
+                <span onClick={handleNoteUnArchive}>
+                  <UnarchiveIcon />
                 </span>
               </Tooltip>
             </span>
@@ -213,11 +186,7 @@ export default function Menubar(props) {
           {permanentDeleteNote && (
             <span className={classes.iconCss}>
               <Tooltip key={"permanentDelete"} title={"Delete forever"}>
-                <span
-                  onClick={e => {
-                    handlePermanentDeleteNote();
-                  }}
-                >
+                <span onClick={handlePermanentDeleteNote}>
                   <DeleteForeverIcon />
                 </span>
               </Tooltip>
@@ -228,11 +197,7 @@ export default function Menubar(props) {
           {restoreNote && (
             <span className={classes.iconCss}>
               <Tooltip key={"restore"} title={"Restore"}>
-                <span
-                  onClick={e => {
-                    handleRestoreNote();
-                  }}
-                >
+                <span onClick={handleRestoreNote}>
                   <RestoreIcon />
                 </span>
               </Tooltip>

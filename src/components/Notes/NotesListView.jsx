@@ -43,96 +43,146 @@ export default function NotesListView(props) {
   function handleShowMenu(note) {
     setSelectedNote(note._id);
   }
-  console.log(props.list);
+  let pinnedNotes = props.list.filter(function (note) {
+    return note.isPinned === true;
+  });
+
+  let otherNotes = props.list.filter(function (note) {
+    return note.isPinned !== true;
+  });
+  const renderNote = (note, index) => {
+    return (
+      <Paper
+        key={index}
+        elevation={4}
+        className={classes.noteCss}
+        style={{
+          borderColor:
+            theme.palette[note.color] === theme.palette.default
+              ? theme.palette.outline
+              : theme.palette[note.color],
+          backgroundColor: theme.palette[note.color],
+        }}
+        onMouseEnter={() => {
+          handleShowMenu(note);
+        }}
+        onMouseLeave={() => {
+          handleShowMenu(note);
+        }}
+      >
+        <List>
+          <div style={{ display: "flex" }}>
+            <TextareaAutosize
+              className={classes.textareaInput}
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+              type="text"
+              // placeholder="Title"
+              value={note.title}
+              disabled={true}
+            />
+
+            {note._id == selectedNote && (
+              <IconButton
+                style={{ position: "relative" }}
+                onClick={() =>
+                  props.handleUpdateNote({
+                    _id: note._id,
+                    isPinned: !note.isPinned,
+                  })
+                }
+              >
+                {note?.isPinned ? (
+                  <FavoriteOutlined className={classes.pinIconCss} />
+                ) : (
+                  <FavoriteIcon className={classes.pinIconCss} />
+                )}
+              </IconButton>
+            )}
+          </div>
+          <TextareaAutosize
+            className={classes.textareaInput}
+            style={{ fontSize: "16px" }}
+            type="text"
+            // placeholder="Description"
+            disabled={true}
+            value={note.description}
+          />
+
+          {note._id == selectedNote ? (
+            <Menubar
+              colorPallete={props.sidebar === "Trash" ? false : true}
+              // addImage={props.sidebar === "Trash" ? false : true}
+              archiveNote={
+                props.sidebar === "Trash"
+                  ? false
+                  : props.sidebar === "Archive"
+                  ? false
+                  : true
+              }
+              handleArchieveNote={() => {
+                props.handleArchieveNote(note);
+              }}
+              unArchiveNote={props.sidebar === "Archive" ? true : false}
+              handleNoteUnArchive={() => {
+                props.handleUnArchieveNote(note);
+              }}
+              deleteNote={props.sidebar === "Trash" ? false : true}
+              handleDeleteNote={() => {
+                props.handleDeleteNote(note);
+              }}
+              permanentDeleteNote={props.sidebar === "Trash" ? true : false}
+              handlePermanentDeleteNote={() => {
+                props.handlePermanentDeleteNote(note);
+              }}
+              restoreNote={props.sidebar === "Trash" ? true : false}
+              handleRestoreNote={() => {
+                props.handleRestoreNote({ _id: note._id });
+              }}
+              handleNoteColorChange={color => {
+                props.handleUpdateNote({
+                  _id: note._id,
+                  color: color,
+                });
+              }}
+              // handleAddImage={e => {
+              //   props.handleUpdateImage({
+              //     event: e,
+              //     _id: note._id,
+              //   });
+              // }}
+            />
+          ) : (
+            <div style={{ height: "30px" }}></div>
+          )}
+        </List>
+      </Paper>
+    );
+  };
   return (
     <Grid>
       {props.list && props.list.length > 0 ? (
         <Grid>
-          {props?.list &&
-            props?.list?.map((note, index) => (
-              <Paper
-                key={index}
-                elevation={4}
-                className={classes.noteCss}
-                style={{
-                  borderColor:
-                    theme.palette[note.color] === theme.palette.default
-                      ? theme.palette.outline
-                      : theme.palette[note.color],
-                  backgroundColor: theme.palette[note.color],
-                }}
-                onMouseEnter={() => {
-                  handleShowMenu(note);
-                }}
-                onMouseLeave={() => {
-                  handleShowMenu(note);
-                }}
-              >
-                <List>
-                  <div style={{ display: "flex" }}>
-                    <TextareaAutosize
-                      className={classes.textareaInput}
-                      style={{ fontSize: "18px", fontWeight: "bold" }}
-                      type="text"
-                      // placeholder="Title"
-                      value={note.title}
-                      disabled={true}
-                    />
+          {pinnedNotes && (
+            <Grid>
+              {pinnedNotes.length > 0 && otherNotes.length > 0 && (
+                <span>PINNED</span>
+              )}
+              <Grid>
+                {pinnedNotes.map((note, index) => renderNote(note, index))}
+              </Grid>
+            </Grid>
+          )}
 
-                    {note._id == selectedNote && (
-                      <IconButton
-                        style={{ position: "relative" }}
-                        onClick={() =>
-                          props.handleUpdateNote({
-                            _id: note._id,
-                            isPinned: !note.isPinned,
-                          })
-                        }
-                      >
-                        {note?.isPinned ? (
-                          <FavoriteOutlined className={classes.pinIconCss} />
-                        ) : (
-                          <FavoriteIcon className={classes.pinIconCss} />
-                        )}
-                      </IconButton>
-                    )}
-                  </div>
-                  <TextareaAutosize
-                    className={classes.textareaInput}
-                    style={{ fontSize: "16px" }}
-                    type="text"
-                    // placeholder="Description"
-                    disabled={true}
-                    value={note.description}
-                  />
-                  {note._id == selectedNote ? (
-                    <Menubar
-                      colorPallete={false} //{props.sidebar === "Trash" ? false : true}
-                      addImage
-                      archiveNote
-                      deleteNote
-                      handleNoteColorChange={color => {
-                        props.handleUpdateNote({
-                          _id: note._id,
-                          color: color,
-                        });
-                      }}
-                      handleDeleteNote={() => {
-                        props.handleDeleteNote(note);
-                      }}
-                      handleAddImage={e => {
-                        props.handleUpdateImage({
-                          event: e,
-                          _id: note._id,
-                        });
-                      }}
-                    />
-                  ) : (
-                    <div style={{ height: "30px" }}></div>
-                  )}
-                </List>
-              </Paper>
-            ))}
+          {otherNotes && (
+            <Grid>
+              {pinnedNotes.length > 0 && otherNotes.length > 0 && (
+                <span>OTHERS</span>
+              )}
+              <Grid>
+                {otherNotes.map((note, index) => renderNote(note, index))}
+              </Grid>
+            </Grid>
+          )}
         </Grid>
       ) : (
         <EmptyNotes sidebar={props.sidebar} />
