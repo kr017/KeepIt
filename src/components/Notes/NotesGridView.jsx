@@ -10,7 +10,7 @@ import { EmptyNotes } from "./EmptyNotes";
 
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
-    display: "-webkit-box",
+    // display: "-webkit-box",
     // display: "-ms-flexbox",
     display: "flex",
     width: "auto",

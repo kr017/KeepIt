@@ -60,9 +60,11 @@ export function SignUp() {
   const history = useHistory();
 
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line
   const [passwordLayout, setPasswordLayout] = useState(false);
-
+  // eslint-disable-next-line
   const { userDispatch } = useLogin();
+
   const [name, setName] = useState({
     value: "",
     error: false,

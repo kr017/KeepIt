@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router";
-import { Avatar, Menu, MenuItem, Tooltip } from "@material-ui/core";
+import { Avatar } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { useLogin } from "../../context";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function MenuDrawer() {
   const classes = useStyles();
-  const [options, setOptions] = useState([
+  const options = [
     {
       label: "Notes",
       isActive: true,
@@ -71,7 +71,7 @@ export default function MenuDrawer() {
     { label: "Edit Labels", icon: <EditOutlinedIcon /> },
     { label: "Archive", icon: <ArchiveIcon /> },
     { label: "Trash", icon: <DeleteForeverIcon /> },
-  ]);
+  ];
 
   return (
     <div className={classes.drawerCss}>

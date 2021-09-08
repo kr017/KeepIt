@@ -9,7 +9,6 @@ import ErrorIcon from "@material-ui/icons/Error";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { checkMail, login } from "../../apis/userService";
 import { useLogin } from "../../context";
-import { Snackbar, SnackbarView } from "../Common/Snackbar";
 
 const useStyles = makeStyles(theme => ({
   root: {

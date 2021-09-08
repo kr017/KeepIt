@@ -99,8 +99,9 @@ export default function Sidebar() {
 
   const [openMenu, setOpenMenu] = useState(false);
   const { userState, userDispatch } = useLogin();
+  // eslint-disable-next-line
   const { notesState, notesDispatch } = useNote();
-
+  // eslint-disable-next-line
   const [options, setOptions] = useState([
     {
       label: "Notes",

@@ -51,6 +51,7 @@ export default function NotesSection() {
 
   useEffect(() => {
     loadList();
+    // eslint-disable-next-line
   }, []);
 
   /**
