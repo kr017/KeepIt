@@ -108,43 +108,48 @@ export default function NotesGridView(props) {
           handleShowMenu(note);
         }}
       >
-        <div style={{ display: "flex" }}>
+        <div
+        // onClick={() => {
+        //   alert("clicked!");
+        // }}
+        >
+          <div style={{ display: "flex" }}>
+            <TextareaAutosize
+              className={classes.textareaInput}
+              style={{ fontSize: "18px", fontWeight: "bold" }}
+              type="text"
+              placeholder="Title"
+              value={note.title}
+              disabled={true}
+            />
+
+            {note._id === selectedNote && props.sidebar !== "Trash" && (
+              <IconButton
+                style={{ position: "relative" }}
+                onClick={() =>
+                  props.handleUpdateNote({
+                    _id: note._id,
+                    isPinned: !note.isPinned,
+                  })
+                }
+              >
+                {note?.isPinned ? (
+                  <FavoriteOutlined className={classes.pinIconCss} />
+                ) : (
+                  <FavoriteIcon className={classes.pinIconCss} />
+                )}
+              </IconButton>
+            )}
+          </div>
           <TextareaAutosize
             className={classes.textareaInput}
-            style={{ fontSize: "18px", fontWeight: "bold" }}
+            style={{ fontSize: "16px" }}
             type="text"
-            placeholder="Title"
-            value={note.title}
+            placeholder="Description"
             disabled={true}
+            value={note.description}
           />
-
-          {note._id === selectedNote && props.sidebar !== "Trash" && (
-            <IconButton
-              style={{ position: "relative" }}
-              onClick={() =>
-                props.handleUpdateNote({
-                  _id: note._id,
-                  isPinned: !note.isPinned,
-                })
-              }
-            >
-              {note?.isPinned ? (
-                <FavoriteOutlined className={classes.pinIconCss} />
-              ) : (
-                <FavoriteIcon className={classes.pinIconCss} />
-              )}
-            </IconButton>
-          )}
         </div>
-        <TextareaAutosize
-          className={classes.textareaInput}
-          style={{ fontSize: "16px" }}
-          type="text"
-          placeholder="Description"
-          disabled={true}
-          value={note.description}
-        />
-
         {note._id === selectedNote ? (
           <Menubar
             colorPallete={props.sidebar === "Trash" ? false : true}

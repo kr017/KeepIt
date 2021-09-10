@@ -1,4 +1,4 @@
-import { Button, Grid } from "@material-ui/core";
+import { Box, Button, Checkbox, Grid, Snackbar } from "@material-ui/core";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import logo from "../../logo.png";
@@ -9,6 +9,9 @@ import ErrorIcon from "@material-ui/icons/Error";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { checkMail, login } from "../../apis/userService";
 import { useLogin } from "../../context";
+import { SnackbarView } from "../Common/Snackbar";
+import { validateEmail } from "../../utils/Theme/utilities.js/validationUtil";
+import { PrimaryButton } from "../Common/Button";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,7 +67,7 @@ export function SignIn() {
   const [passwordLayout, setPasswordLayout] = useState(false);
 
   const { userDispatch } = useLogin();
-
+  const [passwordType, setPasswordType] = useState(false);
   const [username, setUsername] = useState({
     value: "",
     error: false,
@@ -79,34 +82,47 @@ export function SignIn() {
     label: "Enter your password",
     placeHolder: "Enter your password",
   });
+  const [message, setMessage] = useState("");
 
   const submitUsername = () => {
-    setLoading(true);
+    if (!validateEmail(username.value)) {
+      setUsername(prevState => ({
+        ...prevState,
+        error: true,
+        errorMsg: (
+          <span className={classes.errorMsgCss}>
+            <ErrorIcon />
+            Please enter valid email address.
+          </span>
+        ),
+      }));
+    } else {
+      setLoading(true);
+      checkMail({ email: username.value })
+        .then(res => {
+          setLoading(false);
+          setPasswordLayout(true);
+        })
+        .catch(err => {
+          if (err?.response?.status === 400) {
+            setUsername(prevState => ({
+              ...prevState,
+              error: true,
+              errorMsg: (
+                <span className={classes.errorMsgCss}>
+                  <ErrorIcon />
+                  Couldn't find you KeepIt account
+                </span>
+              ),
+            }));
+          }
+          // else {
+          //   <SnackbarView open={true} />;
+          // }
 
-    checkMail({ email: username.value })
-      .then(res => {
-        setLoading(false);
-        setPasswordLayout(true);
-      })
-      .catch(err => {
-        if (err?.response?.status === 400) {
-          setUsername(prevState => ({
-            ...prevState,
-            error: true,
-            errorMsg: (
-              <span className={classes.errorMsgCss}>
-                <ErrorIcon />
-                Couldn't find you KeepIt account
-              </span>
-            ),
-          }));
-        }
-        // else {
-        //   <SnackbarView open={true} />;
-        // }
-
-        setLoading(false);
-      });
+          setLoading(false);
+        });
+    }
   };
   const submitPassword = () => {
     setLoading(true);
@@ -138,6 +154,8 @@ export function SignIn() {
 
   return (
     <div className={classes.root}>
+      {message && message?.type && <SnackbarView />}
+
       <Grid container className={classes.containerCss}>
         <BarLoader
           color="#1a73e8"
@@ -192,17 +210,7 @@ export function SignIn() {
                 </span>
               </Grid>
               <Grid item>
-                <Button
-                  onClick={submitUsername}
-                  variant="contained"
-                  style={{
-                    backgroundColor: "#1a73e8",
-                    color: "#ffffff",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  Next
-                </Button>
+                <PrimaryButton message="next" onClick={submitUsername} />
               </Grid>
             </Grid>
           </>
@@ -222,6 +230,7 @@ export function SignIn() {
             </Grid>
             <Grid item style={{ padding: "14px 0px" }}>
               <OutLinedInput
+                type={!passwordType ? "password" : "text"}
                 label={password.label}
                 placeHolder={password.placeHolder}
                 value={password.value}
@@ -240,9 +249,18 @@ export function SignIn() {
                   }
                 }}
               />
-
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  onChange={e => {
+                    setPasswordType(e.target.checked);
+                  }}
+                  style={{ padding: "9px 0px", color: "#1a73e8" }}
+                />
+                <span>Show password</span>
+              </Box>
               {/* <span>Forgot email?</span> */}
             </Grid>
+            <Grid item></Grid>
             <Grid container item className={classes.actionAreaCss}>
               <Grid item>
                 <span style={{ color: "#1a73e8", cursor: "pointer" }}>
@@ -250,17 +268,7 @@ export function SignIn() {
                 </span>
               </Grid>
               <Grid item>
-                <Button
-                  onClick={submitUsername}
-                  variant="contained"
-                  style={{
-                    backgroundColor: "#1a73e8",
-                    color: "#ffffff",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  Next
-                </Button>
+                <PrimaryButton message="next" onClick={submitPassword} />
               </Grid>
             </Grid>
           </>

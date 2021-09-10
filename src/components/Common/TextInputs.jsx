@@ -14,7 +14,7 @@ export const OutLinedInput = props => {
     error,
     errorMsg,
     placeHolder,
-
+    type,
     handleChange,
     handleKeyPress,
   } = props;
@@ -22,6 +22,7 @@ export const OutLinedInput = props => {
 
   return (
     <TextField
+      type={type ? type : "text"}
       // id={id}
       label={showLabel ? label : activeLabel ? label : null}
       variant="outlined"

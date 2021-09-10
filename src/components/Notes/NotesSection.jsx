@@ -114,13 +114,13 @@ export default function NotesSection() {
 
   return (
     <div>
-      {userState.sidebar === "Notes" && (
+      {userState.sidebar === "Notes" ? (
         <CreateNote
           loadDetails={() => {
             loadList();
           }}
         />
-      )}
+      ) : null}
       {userState.view === "list" ? (
         <NotesListView
           sidebar={userState.sidebar ? userState.sidebar : "Notes"}

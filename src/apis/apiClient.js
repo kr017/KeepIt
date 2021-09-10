@@ -10,7 +10,6 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   function (request) {
-    // Do something before request is sent
     let token = JSON.parse(localStorage.getItem("hint"));
     if (request.url.includes("api")) {
       request.headers.authorization = token.token;
@@ -31,12 +30,12 @@ axiosClient.interceptors.response.use(
   function (error) {
     let res = error.response;
 
-    if (res.status === 401) {
-      localStorage.clear();
-      window.location.href = "http://localhost:3000/signin";
+    // if (res.status === 401) {
+    localStorage.clear();
+    window.location.href = window.location.origin;
 
-      // userDispatch({ type: "LOGOUT" });
-    }
+    // userDispatch({ type: "LOGOUT" });
+    // }
 
     console.error(`Looks like there was a problem. Status Code: ` + res.status);
     return Promise.reject(error);

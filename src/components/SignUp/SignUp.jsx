@@ -8,6 +8,9 @@ import BarLoader from "react-spinners/BarLoader";
 import ErrorIcon from "@material-ui/icons/Error";
 import { signup } from "../../apis/userService";
 import { useLogin } from "../../context";
+import { PrimaryButton } from "../Common/Button";
+import { validateEmail } from "../../utils/Theme/utilities.js/validationUtil";
+import { SnackbarView } from "../Common/Snackbar";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -86,6 +89,7 @@ export function SignUp() {
     label: "Enter your password",
     placeHolder: "Enter your password",
   });
+  const [message, setMessage] = useState({});
 
   const submitDetails = () => {
     setLoading(true);
@@ -96,19 +100,41 @@ export function SignUp() {
     })
       .then(res => {
         setLoading(false);
+        setMessage(prevState => ({
+          ...prevState,
 
-        history.push("/signin");
+          message: "Registration Successful! Please login",
+          type: "success",
+          actionMsg: "OK",
+          actionHandler: () => {
+            history.push("/signin");
+          },
+        }));
       })
       .catch(err => {
-        setPassword(prevState => ({
+        setMessage(prevState => ({
           ...prevState,
-          error: true,
-          errorMsg: (
-            <span className={classes.errorMsgCss}>
-              <ErrorIcon />
-              Wrong password. Try again or click Forgot password to reset it.
-            </span>
-          ),
+
+          message: err.response.data.message
+            ? err.response.data.message
+            : "Something went wrong please try again",
+          type: "error",
+          actionMsg: "OK",
+          actionHandler: () => {
+            setName(prevState => ({
+              ...prevState,
+              value: "",
+            }));
+            setPassword(prevState => ({
+              ...prevState,
+              value: "",
+            }));
+            setUsername(prevState => ({
+              ...prevState,
+              value: "",
+            }));
+            setMessage(null);
+          },
         }));
         setLoading(false);
       });
@@ -116,6 +142,7 @@ export function SignUp() {
 
   return (
     <div className={classes.root}>
+      {message && message?.type && <SnackbarView message={message} />}
       <Grid container className={classes.containerCss}>
         <BarLoader
           color="#1a73e8"
@@ -158,10 +185,26 @@ export function SignUp() {
             errorMsg={username.errorMsg}
             showLabel={username.errorMsg ? username.errorMsg : false}
             handleChange={e => {
-              setUsername(prevState => ({
-                ...prevState,
-                value: e.target.value,
-              }));
+              if (!validateEmail(username.value)) {
+                setUsername(prevState => ({
+                  ...prevState,
+                  value: e.target.value,
+                  error: true,
+                  errorMsg: (
+                    <span className={classes.errorMsgCss}>
+                      <ErrorIcon />
+                      Please enter valid email address.
+                    </span>
+                  ),
+                }));
+              } else {
+                setUsername(prevState => ({
+                  ...prevState,
+                  value: e.target.value,
+                  error: false,
+                  errorMsg: null,
+                }));
+              }
             }}
             handleKeyPress={e => {
               if (e.key === "Enter") {
@@ -201,17 +244,7 @@ export function SignUp() {
             </span>
           </Grid>
           <Grid item>
-            <Button
-              onClick={submitDetails}
-              variant="contained"
-              style={{
-                backgroundColor: "#1a73e8",
-                color: "#ffffff",
-                textTransform: "capitalize",
-              }}
-            >
-              Sign Up
-            </Button>
+            <PrimaryButton message="sign up" onClick={submitDetails} />
           </Grid>
         </Grid>
       </Grid>

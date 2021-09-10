@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { ClickAwayListener, Paper } from "@material-ui/core";
+import { ClickAwayListener, IconButton, Paper } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 // import { PinIcon } from "../Common/Icons";
 import TextareaAutosize from "react-textarea-autosize";
 import Menubar from "./Menubar";
 import { addNote } from "../../apis/noteServices";
 import { useNote } from "../../context";
+import FavoriteOutlined from "@material-ui/icons/FavoriteOutlined";
+import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,11 +17,7 @@ const useStyles = makeStyles(theme => ({
       margin: "16px auto 16px auto",
     },
   },
-  rootCss: {
-    padding: "1em",
-    margin: "2em",
-  },
-  shortNoteContainerCss: {},
+
   shortNoteCss: {
     borderRadius: "5px",
     border: "1px solid",
@@ -34,9 +32,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
   },
-  contentCss: {
-    flexGrow: 11,
-  },
+
   textareaInput: {
     border: "none",
     width: "100%",
@@ -55,6 +51,7 @@ export default function CreateNote(props) {
   const [description, setDescription] = useState(null);
   const [noteColor, setNoteColor] = useState(null);
   const [showShort, setShowShort] = useState(true);
+  const [pinned, setPinned] = useState(false);
   const theme = useTheme();
 
   const { notesDispatch } = useNote();
@@ -67,6 +64,7 @@ export default function CreateNote(props) {
       title: title,
       description: description,
       color: noteColor,
+      isPinned: pinned,
     };
 
     addNote(requestParams)
@@ -76,13 +74,14 @@ export default function CreateNote(props) {
         setDescription("");
         setNoteColor("");
         setShowShort(true);
+        setPinned(false);
       })
       .catch(err => {});
   }
   return (
     <div className={classes.root}>
       {showShort ? (
-        <div className={classes.shortNoteContainerCss}>
+        <div>
           <Paper elevation={4} className={classes.shortNoteCss}>
             <TextareaAutosize
               // rows="1"
@@ -124,10 +123,8 @@ export default function CreateNote(props) {
             }}
             className={classes.noteCss}
           >
-            <div
-            // className={classes.containerCss}
-            >
-              <div className={classes.contentCss}>
+            <div>
+              <div style={{ display: "flex" }}>
                 <TextareaAutosize
                   // rows="1"
                   className={classes.textareaInput}
@@ -140,33 +137,36 @@ export default function CreateNote(props) {
                   value={title}
                 />
 
-                <TextareaAutosize
-                  className={classes.textareaInput}
-                  onChange={e => {
-                    setDescription(e.target.value);
-                  }}
-                  type="text"
-                  style={{ fontSize: "16px" }}
-                  placeholder="Take a note..."
-                  value={description ? description : ""}
-                  autoFocus
-                />
+                <div>
+                  <IconButton
+                    style={{ position: "relative" }}
+                    onClick={() => setPinned(!pinned)}
+                  >
+                    {pinned ? (
+                      <FavoriteOutlined className={classes.pinIconCss} />
+                    ) : (
+                      <FavoriteIcon className={classes.pinIconCss} />
+                    )}
+                  </IconButton>
+                </div>
               </div>
-
-              <div>
-                {/* <PinIcon
-            style={{ color: "red" }}
-            isPinned={true} //{isPinned}
-            // setPinned={setPinned}
-            handlePinClick={null} //{pinClickHandler}
-          /> */}
-              </div>
+              <TextareaAutosize
+                className={classes.textareaInput}
+                onChange={e => {
+                  setDescription(e.target.value);
+                }}
+                type="text"
+                style={{ fontSize: "16px" }}
+                placeholder="Take a note..."
+                value={description ? description : ""}
+                autoFocus
+              />
             </div>
             <div style={{ padding: "0px 15px" }}>
               <Menubar
                 colorPallete
-                addImage
-                archiveNote
+                // addImage
+                // archiveNote
                 closeNote
                 handleNoteColorChange={handleNoteColorChange}
               />

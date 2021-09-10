@@ -1,38 +1,34 @@
-import { Snackbar } from "@material-ui/core";
+import { Button, Snackbar } from "@material-ui/core";
 import React from "react";
+import Alert from "@material-ui/lab/Alert";
 
-export const SnackbarView = props => {
-  const { open } = props;
-
+/*
+type:"success | warning | info | error"
+*/
+export const SnackbarView = ({ message }) => {
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
+        vertical: "top",
+        horizontal: "center",
       }}
-      open={open}
+      open={true}
       autoHideDuration={6000}
       //   onClose={handleClose}
-      message="Note archived"
-      action={
-        <React.Fragment>
-          {/* <Button
-            color="secondary"
-            size="small"
-            //   onClick={handleClose}
-          >
-            UNDO
+      // message={message}
+    >
+      <Alert
+        variant="filled"
+        // onClose={handleClose}
+        severity={message.type}
+        action={
+          <Button color="inherit" size="small" onClick={message.actionHandler}>
+            {message.actionMsg}
           </Button>
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton> */}
-        </React.Fragment>
-      }
-    />
+        }
+      >
+        {message.message}
+      </Alert>
+    </Snackbar>
   );
 };
