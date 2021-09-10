@@ -1,6 +1,4 @@
-import { Button, makeStyles } from "@material-ui/core";
-
-const useStyles = makeStyles(theme => ({}));
+import { Button } from "@material-ui/core";
 
 export function PrimaryButton(props) {
   const { message, onClick } = props;

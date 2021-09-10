@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Grid, Snackbar } from "@material-ui/core";
+import { Box, Checkbox, Grid } from "@material-ui/core";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import logo from "../../logo.png";
@@ -82,6 +82,7 @@ export function SignIn() {
     label: "Enter your password",
     placeHolder: "Enter your password",
   });
+  // eslint-disable-next-line
   const [message, setMessage] = useState("");
 
   const submitUsername = () => {
