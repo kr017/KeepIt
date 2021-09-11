@@ -105,7 +105,6 @@ export default function Sidebar() {
   const [options, setOptions] = useState([
     {
       label: "Notes",
-      isActive: true,
       icon: (
         <WbIncandescentOutlinedIcon style={{ transform: "rotateX(180deg)" }} />
       ),
@@ -171,7 +170,7 @@ export default function Sidebar() {
               options.map((anchor, index) => (
                 <List
                   className={
-                    anchor.isActive
+                    anchor.label === userState?.sidebar
                       ? classes.drawerListItemCss_Active
                       : classes.drawerListItemCss
                   }
@@ -194,12 +193,16 @@ export default function Sidebar() {
                     toggleDrawer();
                   }}
                   className={
-                    anchor?.isActive
+                    anchor.label === userState?.sidebar
                       ? classes.ListItemCss_Active
                       : classes.ListItemCss
                   }
                   onClick={() => handleSidebarClick(anchor.label)}
                 >
+                  {console.log(
+                    userState.sidebar === undefined,
+                    anchor.label === "Notes"
+                  )}
                   <span>{anchor.icon}</span>
                 </span>
               </List>

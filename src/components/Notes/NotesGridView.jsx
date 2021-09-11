@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Grid, IconButton, Paper, useMediaQuery } from "@material-ui/core";
+import {
+  Dialog,
+  Grid,
+  IconButton,
+  Paper,
+  useMediaQuery,
+} from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Menubar from "./Menubar";
 import TextareaAutosize from "react-textarea-autosize";
@@ -7,6 +13,7 @@ import FavoriteOutlined from "@material-ui/icons/FavoriteOutlined";
 import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
 import Masonry from "react-masonry-css";
 import { EmptyNotes } from "./EmptyNotes";
+import { EditNote } from "./EditNote";
 
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
@@ -51,8 +58,12 @@ export default function NotesGridView(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [selectedNote, setSelectedNote] = useState(null);
+  const [note, setNote] = useState(null);
+
+  const [open, setOpen] = useState(false);
   function handleShowMenu(note) {
     setSelectedNote(note._id);
+    setNote(note);
   }
   const [breakPoints, setBreakPoints] = useState(3);
   /**
@@ -109,9 +120,9 @@ export default function NotesGridView(props) {
         }}
       >
         <div
-        // onClick={() => {
-        //   alert("clicked!");
-        // }}
+          onClick={() => {
+            setOpen(true);
+          }}
         >
           <div style={{ display: "flex" }}>
             <TextareaAutosize
@@ -238,6 +249,15 @@ export default function NotesGridView(props) {
       ) : (
         <EmptyNotes sidebar={props.sidebar} />
       )}
+      <Dialog
+        onClose={() => setOpen(false)}
+        aria-labelledby="simple-dialog-title"
+        open={open}
+        fullWidth
+        maxWidth="sm"
+      >
+        <EditNote isEditNote note={note} closeWindow={() => setOpen(false)} />
+      </Dialog>
     </Grid>
   );
 }

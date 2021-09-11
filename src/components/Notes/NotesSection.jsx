@@ -1,5 +1,7 @@
-import React from "react";
+import { Grid } from "@material-ui/core";
+import React, { useState } from "react";
 import { useEffect } from "react";
+import { PulseLoader } from "react-spinners";
 import {
   archieveNote,
   deleteNote,
@@ -25,25 +27,32 @@ export default function NotesSection() {
   const { userState } = useLogin();
 
   const { notesState, notesDispatch } = useNote();
+  const [loading, setLoading] = useState(false);
 
   /**
    *
    */
   function loadList() {
     if (userState?.sidebar === "Archive") {
+      setLoading(true);
       getAllNotes({ isArchieved: true })
         .then(function (res) {
           notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+          setLoading(false);
         })
         .catch(err => {});
     } else if (userState?.sidebar === "Trash") {
+      setLoading(true);
       getTrashNotes().then(function (res) {
         notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        setLoading(false);
       });
     } else {
+      setLoading(true);
       getAllNotes({ isArchieved: false })
         .then(function (res) {
           notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+          setLoading(false);
         })
         .catch(err => {});
     }
@@ -114,13 +123,22 @@ export default function NotesSection() {
 
   return (
     <div>
-      {userState.sidebar === "Notes" ? (
+      {userState?.sidebar && userState?.sidebar !== "Notes" ? null : (
         <CreateNote
           loadDetails={() => {
             loadList();
           }}
         />
-      ) : null}
+      )}
+      <Grid
+        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
+      >
+        <PulseLoader
+          color="#F9C342"
+          loading={loading}
+          width={440} //"auto"
+        />
+      </Grid>
       {userState.view === "list" ? (
         <NotesListView
           sidebar={userState.sidebar ? userState.sidebar : "Notes"}

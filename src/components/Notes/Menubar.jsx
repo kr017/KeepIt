@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
       margin: "1px 4px 1px 2px",
     },
     height: "20px",
+    cursor: "pointer",
   },
   ".MuiIconButton-root": {
     padding: "0px 12px",
@@ -48,6 +49,7 @@ export default function Menubar(props) {
     unArchiveNote,
     deleteNote,
     closeNote,
+    handleCloseNote,
     permanentDeleteNote,
     restoreNote,
     handleArchieveNote,
@@ -126,7 +128,7 @@ export default function Menubar(props) {
           {/* archieve note */}
           {archiveNote && (
             <span className={classes.iconCss}>
-              <Tooltip key={"archieve"} title={"Color Palette"}>
+              <Tooltip key={"archieve"} title={"archive"}>
                 <span onClick={handleArchieveNote}>
                   <ArchiveIcon />
                 </span>
@@ -137,7 +139,7 @@ export default function Menubar(props) {
           {/* unarchieve note */}
           {unArchiveNote && (
             <span className={classes.iconCss}>
-              <Tooltip key={"archieve"} title={"Color Palette"}>
+              <Tooltip key={"archieve"} title={"unarchive"}>
                 <span onClick={handleNoteUnArchive}>
                   <UnarchiveIcon />
                 </span>
@@ -157,7 +159,9 @@ export default function Menubar(props) {
               }}
               onClick={handleDeleteNote}
             >
-              <DeleteOutlinedIcon />
+              <Tooltip key={"delete"} title={"delete"}>
+                <DeleteOutlinedIcon />
+              </Tooltip>
             </span>
           )}
 
@@ -171,6 +175,7 @@ export default function Menubar(props) {
                 right: "0px",
               }}
               className={classes.closeButtonCss}
+              onClick={handleCloseNote}
             >
               close
             </span>

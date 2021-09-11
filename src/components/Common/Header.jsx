@@ -235,7 +235,7 @@ export function Header() {
       </AppBar>
 
       <Popover
-        open={openProfile}
+        open={openProfile ? openProfile : false}
         anchorEl={anchorEl}
         onClose={toggleOpenProfile}
         anchorOrigin={{
@@ -247,7 +247,7 @@ export function Header() {
       </Popover>
 
       <Popover
-        open={openMenu}
+        open={openMenu ? openMenu : false}
         anchorEl={menuAnchorEl}
         onClose={toggleMenu}
         elevation={0}

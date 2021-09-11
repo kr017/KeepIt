@@ -3,9 +3,10 @@ import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import ArchiveIcon from "@material-ui/icons/Archive";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import WbIncandescentOutlinedIcon from "@material-ui/icons/WbIncandescentOutlined";
-import NotificationsNoneOutlinedIcon from "@material-ui/icons/NotificationsNoneOutlined";
+import { getAllNotes, getTrashNotes } from "../../apis/noteServices";
+import { useLogin, useNote } from "../../context";
+import { setStorage } from "../../utils/Theme/utilities.js/storageUtil";
 
 const useStyles = makeStyles(theme => ({
   drawerCss: {
@@ -59,31 +60,62 @@ const useStyles = makeStyles(theme => ({
 
 export default function MenuDrawer() {
   const classes = useStyles();
+  const { userState, userDispatch } = useLogin();
+  // eslint-disable-next-line
+  const { notesState, notesDispatch } = useNote();
+
   const options = [
     {
       label: "Notes",
-      isActive: true,
       icon: (
         <WbIncandescentOutlinedIcon style={{ transform: "rotateX(180deg)" }} />
       ),
     },
-    { label: "Remainders", icon: <NotificationsNoneOutlinedIcon /> },
-    { label: "Edit Labels", icon: <EditOutlinedIcon /> },
+    // { label: "Remainders", icon: <NotificationsNoneOutlinedIcon /> },
+    // { label: "Edit Labels", icon: <EditOutlinedIcon /> },
     { label: "Archive", icon: <ArchiveIcon /> },
     { label: "Trash", icon: <DeleteForeverIcon /> },
   ];
 
+  const handleSidebarClick = key => {
+    if (key === "Archive") {
+      getAllNotes({ isArchieved: true })
+        .then(function (res) {
+          notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        })
+        .catch(err => {});
+    } else if (key === "Trash") {
+      getTrashNotes().then(function (res) {
+        notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+      });
+    } else {
+      getAllNotes()
+        .then(function (res) {
+          notesDispatch({ type: "GET_NOTES", payload: res.data.data });
+        })
+        .catch(err => {});
+    }
+    let choice = {
+      theme: userState?.theme,
+      view: userState?.view,
+      sidebar: key ? key : userState?.sidebar,
+    };
+
+    setStorage("choice", choice);
+    userDispatch({ type: "SETCHOICE", payload: choice });
+  };
   return (
     <div className={classes.drawerCss}>
       {options?.length > 0 &&
         options.map((anchor, index) => (
           <List
             className={
-              anchor.isActive
+              anchor.label === userState?.sidebar
                 ? classes.drawerListItemCss_Active
                 : classes.drawerListItemCss
             }
             key={index}
+            onClick={() => handleSidebarClick(anchor.label)}
           >
             <span className={classes.drawerIconCss}>{anchor.icon}</span>
             <span className={classes.drawerLabelCss}>{anchor.label}</span>
