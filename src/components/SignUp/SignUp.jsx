@@ -215,6 +215,7 @@ export function SignUp() {
         <Grid item style={{ padding: "14px 0px" }}>
           <OutLinedInput
             label={password.label}
+            type="password"
             placeHolder={password.placeHolder}
             value={password.value}
             error={password.error}

@@ -127,6 +127,7 @@ export function SignIn() {
   };
   const submitPassword = () => {
     setLoading(true);
+
     login({ email: username.value, password: password.value })
       .then(res => {
         setLoading(false);
@@ -139,16 +140,29 @@ export function SignIn() {
         }
       })
       .catch(err => {
-        setPassword(prevState => ({
-          ...prevState,
-          error: true,
-          errorMsg: (
-            <span className={classes.errorMsgCss}>
-              <ErrorIcon />
-              Wrong password. Try again or click Forgot password to reset it.
-            </span>
-          ),
-        }));
+        if (err.response.status === 400) {
+          setPassword(prevState => ({
+            ...prevState,
+            error: true,
+            errorMsg: (
+              <span className={classes.errorMsgCss}>
+                <ErrorIcon />
+                Wrong password. Try again or click Forgot password to reset it.
+              </span>
+            ),
+          }));
+        } else {
+          setMessage(prevState => ({
+            ...prevState,
+
+            message: "Something went wrong please try again",
+            type: "success",
+            actionMsg: "OK",
+            actionHandler: () => {
+              history.push("/signin");
+            },
+          }));
+        }
         setLoading(false);
       });
   };

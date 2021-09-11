@@ -30,12 +30,9 @@ axiosClient.interceptors.response.use(
   function (error) {
     let res = error.response;
 
-    // if (res.status === 401) {
-    localStorage.clear();
-    window.location.href = window.location.origin;
-
-    // userDispatch({ type: "LOGOUT" });
-    // }
+    if (res.status === 401) {
+      localStorage.clear();
+    }
 
     console.error(`Looks like there was a problem. Status Code: ` + res.status);
     return Promise.reject(error);
