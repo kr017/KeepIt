@@ -65,7 +65,6 @@ export function SignIn() {
 
   const [loading, setLoading] = useState(false);
   const [passwordLayout, setPasswordLayout] = useState(false);
-  const [guest, setGuest] = useState(false);
   const { userDispatch } = useLogin();
   const [passwordType, setPasswordType] = useState(false);
   const [username, setUsername] = useState({
