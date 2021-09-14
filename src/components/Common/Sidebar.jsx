@@ -10,6 +10,7 @@ import { getAllNotes, getTrashNotes } from "../../apis/noteServices";
 
 const useStyles = makeStyles(theme => ({
   root: {
+    // marginTop: "2px",
     //color: theme.primary,
     //backgroundColor: theme.secondary,
   },
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: 0,
   },
   drawerPaper: {
-    marginTop: "70px", // equal to AppBar height
+    marginTop: "65px", // equal to AppBar height
     border: "none",
     width: "280px",
     [theme.breakpoints.down("xs")]: {
@@ -184,7 +185,7 @@ export default function Sidebar() {
           </Drawer>
         </ClickAwayListener>
       ) : (
-        <div style={{ paddingTop: "8px" }}>
+        <div style={{ marginTop: "68px", position: "fixed" }}>
           {options?.length > 0 &&
             options.map((anchor, index) => (
               <List disablePadding key={index}>
@@ -199,10 +200,6 @@ export default function Sidebar() {
                   }
                   onClick={() => handleSidebarClick(anchor.label)}
                 >
-                  {console.log(
-                    userState.sidebar === undefined,
-                    anchor.label === "Notes"
-                  )}
                   <span>{anchor.icon}</span>
                 </span>
               </List>

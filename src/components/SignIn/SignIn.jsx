@@ -1,4 +1,4 @@
-import { Box, Checkbox, Grid } from "@material-ui/core";
+import { Box, Button, Checkbox, Grid } from "@material-ui/core";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import logo from "../../logo.png";
@@ -65,7 +65,7 @@ export function SignIn() {
 
   const [loading, setLoading] = useState(false);
   const [passwordLayout, setPasswordLayout] = useState(false);
-
+  const [guest, setGuest] = useState(false);
   const { userDispatch } = useLogin();
   const [passwordType, setPasswordType] = useState(false);
   const [username, setUsername] = useState({
@@ -125,15 +125,29 @@ export function SignIn() {
         });
     }
   };
+  const submitGuest = () => {
+    login({
+      email: "visitor@gmail.com",
+      password: "1234",
+    }).then(res => {
+      setLoading(false);
+      userDispatch({ type: "LOGIN", payload: res.data.data });
+      history.push("/");
+      if (res?.data?.data?.token) {
+        localStorage.setItem("hint", JSON.stringify(res.data.data));
+      }
+    });
+  };
   const submitPassword = () => {
     setLoading(true);
 
-    login({ email: username.value, password: password.value })
+    login({
+      email: username.value,
+      password: password.value,
+    })
       .then(res => {
         setLoading(false);
-
         userDispatch({ type: "LOGIN", payload: res.data.data });
-
         history.push("/");
         if (res?.data?.data?.token) {
           localStorage.setItem("hint", JSON.stringify(res.data.data));
@@ -215,6 +229,15 @@ export function SignIn() {
 
               {/* <span>Forgot email?</span> */}
             </Grid>
+            <Grid>
+              <Button
+                onClick={() => {
+                  submitGuest();
+                }}
+              >
+                Guest Login
+              </Button>
+            </Grid>
             <Grid container item className={classes.actionAreaCss}>
               <Grid item>
                 <span
@@ -275,7 +298,7 @@ export function SignIn() {
               </Box>
               {/* <span>Forgot email?</span> */}
             </Grid>
-            <Grid item></Grid>
+
             <Grid container item className={classes.actionAreaCss}>
               <Grid item>
                 <span style={{ color: "#1a73e8", cursor: "pointer" }}>
@@ -285,6 +308,9 @@ export function SignIn() {
               <Grid item>
                 <PrimaryButton message="next" onClick={submitPassword} />
               </Grid>
+            </Grid>
+            <Grid item>
+              <PrimaryButton message="next" onClick={submitPassword} />
             </Grid>
           </>
         )}

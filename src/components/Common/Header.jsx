@@ -85,8 +85,8 @@ export function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-
   const { userState, userDispatch } = useLogin();
+
   const { notesDispatch } = useNote();
 
   function handleUserChoice(key) {
@@ -126,8 +126,9 @@ export function Header() {
 
   const handleSearch = e => {
     let search = e.target.value;
+    let isArchieved = userState?.sidebar === "Archive" ? true : false;
 
-    getAllNotes({ search: search })
+    getAllNotes({ search: search, isArchieved: isArchieved })
       .then(function (res) {
         notesDispatch({ type: "GET_NOTES", payload: res.data.data });
       })
@@ -135,7 +136,7 @@ export function Header() {
   };
   return (
     <div className={classes.root}>
-      <AppBar position="static" className={classes.appBarCss}>
+      <AppBar position="fixed" className={classes.appBarCss}>
         <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
           <span style={{ display: "inline-flex", alignItems: "center" }}>
             <IconButton

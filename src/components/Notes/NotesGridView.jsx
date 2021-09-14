@@ -14,6 +14,7 @@ import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
 import Masonry from "react-masonry-css";
 import { EmptyNotes } from "./EmptyNotes";
 import { EditNote } from "./EditNote";
+import { useLogin } from "../../context";
 
 const useStyles = makeStyles(theme => ({
   myMasonryGrid: {
@@ -57,6 +58,7 @@ const useStyles = makeStyles(theme => ({
 export default function NotesGridView(props) {
   const classes = useStyles();
   const theme = useTheme();
+  const { userState } = useLogin();
   const [selectedNote, setSelectedNote] = useState(null);
   const [note, setNote] = useState(null);
 
@@ -121,7 +123,12 @@ export default function NotesGridView(props) {
       >
         <div
           onClick={() => {
-            setOpen(true);
+            if (userState?.sidebar === "Trash") {
+              return;
+            } else {
+              setOpen(true);
+              setNote(note);
+            }
           }}
         >
           <div style={{ display: "flex" }}>

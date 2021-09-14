@@ -122,7 +122,7 @@ export default function NotesSection() {
   }
 
   return (
-    <div>
+    <div style={{ marginTop: "82px" }}>
       {userState?.sidebar && userState?.sidebar !== "Notes" ? null : (
         <CreateNote
           loadDetails={() => {
@@ -131,7 +131,7 @@ export default function NotesSection() {
         />
       )}
       <Grid
-        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
+        style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}
       >
         <PulseLoader
           color="#F9C342"

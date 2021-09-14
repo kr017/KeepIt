@@ -6,10 +6,10 @@ import { EditNote } from "./EditNote";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: "32px auto 16px auto",
+    margin: "80px auto 16px auto",
     width: "70vw",
     [theme.breakpoints.down("xs")]: {
-      margin: "16px auto 16px auto",
+      margin: "80px auto 16px auto",
     },
   },
 

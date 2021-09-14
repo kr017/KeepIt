@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Grid, IconButton, List, Paper } from "@material-ui/core";
+import { Dialog, Grid, IconButton, List, Paper } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Menubar from "./Menubar";
 import TextareaAutosize from "react-textarea-autosize";
 import FavoriteOutlined from "@material-ui/icons/FavoriteOutlined";
 import FavoriteIcon from "@material-ui/icons/FavoriteBorderRounded";
 import { EmptyNotes } from "./EmptyNotes";
+import { EditNote } from "./EditNote";
+import { useLogin } from "../../context";
 
 const useStyles = makeStyles(theme => ({
   gridNoteCss: {
@@ -38,10 +40,15 @@ const useStyles = makeStyles(theme => ({
 export default function NotesListView(props) {
   const classes = useStyles();
   const theme = useTheme();
+  const [note, setNote] = useState(null);
+  const { userState } = useLogin();
+
+  const [open, setOpen] = useState(false);
 
   const [selectedNote, setSelectedNote] = useState(null);
   function handleShowMenu(note) {
     setSelectedNote(note._id);
+    setNote(note);
   }
   let pinnedNotes = props.list.filter(function (note) {
     return note.isPinned === true;
@@ -68,6 +75,14 @@ export default function NotesListView(props) {
         }}
         onMouseLeave={() => {
           handleShowMenu(note);
+        }}
+        onClick={() => {
+          if (userState?.sidebar === "Trash") {
+            return;
+          } else {
+            setOpen(true);
+            setNote(note);
+          }
         }}
       >
         <List>
@@ -187,6 +202,16 @@ export default function NotesListView(props) {
       ) : (
         <EmptyNotes sidebar={props.sidebar} />
       )}
+
+      <Dialog
+        onClose={() => setOpen(false)}
+        aria-labelledby="simple-dialog-title"
+        open={open}
+        fullWidth
+        maxWidth="sm"
+      >
+        <EditNote isEditNote note={note} closeWindow={() => setOpen(false)} />
+      </Dialog>
     </Grid>
   );
 }
